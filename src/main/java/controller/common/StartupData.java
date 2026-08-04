@@ -28,27 +28,27 @@ public class StartupData {
         if (userFacade.count() > 0) return; // already seeded
 
         // ── Users ──────────────────────────────────────────────
-        User manager1 = new User("manager1", "pass123", "Female", "IC001", 601111111, "alice@hotel.com", "KL", Role.MANAGER, 5000.0);
+        User manager1 = new User("manager1", "pass123", "Female", "800101010001", "0111111101", "alice@hotel.com", "KL", Role.MANAGER, 5000.0);
 
-        User staff1 = new User("staff1", "pass123", "Male", "IC002", 601111112, "bob@hotel.com", "KL", Role.COUNTER_STAFF, 3000.0);
-        User staff2 = new User("staff2", "pass123", "Female", "IC003", 601111113, "carol@hotel.com", "KL", Role.COUNTER_STAFF, 3000.0);
+        User staff1 = new User("staff1", "pass123", "Male",   "800101010002", "0111111102", "bob@hotel.com",   "KL", Role.COUNTER_STAFF, 3000.0);
+        User staff2 = new User("staff2", "pass123", "Female", "800101010003", "0111111103", "carol@hotel.com", "KL", Role.COUNTER_STAFF, 3000.0);
 
-        User hk1 = new User("hk1", "pass123", "Male", "IC004", 601111114, "david@hotel.com", "KL", Role.HOUSEKEEPER, 2000.0);
-        User hk2 = new User("hk2", "pass123", "Female", "IC005", 601111115, "eve@hotel.com", "KL", Role.HOUSEKEEPER, 2000.0);
-        User hk3 = new User("hk3", "pass123", "Male", "IC006", 601111116, "frank@hotel.com", "KL", Role.HOUSEKEEPER, 2000.0);
-        User hk4 = new User("hk4", "pass123", "Female", "IC007", 601111117, "grace@hotel.com", "KL", Role.HOUSEKEEPER, 2000.0);
-        User hk5 = new User("hk5", "pass123", "Male", "IC008", 601111118, "henry@hotel.com", "KL", Role.HOUSEKEEPER, 2000.0);
+        User hk1 = new User("hk1", "pass123", "Male",   "800101010004", "0111111104", "david@hotel.com", "KL", Role.HOUSEKEEPER, 2000.0);
+        User hk2 = new User("hk2", "pass123", "Female", "800101010005", "0111111105", "eve@hotel.com",   "KL", Role.HOUSEKEEPER, 2000.0);
+        User hk3 = new User("hk3", "pass123", "Male",   "800101010006", "0111111106", "frank@hotel.com", "KL", Role.HOUSEKEEPER, 2000.0);
+        User hk4 = new User("hk4", "pass123", "Female", "800101010007", "0111111107", "grace@hotel.com", "KL", Role.HOUSEKEEPER, 2000.0);
+        User hk5 = new User("hk5", "pass123", "Male",   "800101010008", "0111111108", "henry@hotel.com", "KL", Role.HOUSEKEEPER, 2000.0);
 
-        User c1  = new User("customer1",  "pass123", "Male",   "IC011", 601111121, "c1@mail.com",  "PJ", Role.CUSTOMER, null);
-        User c2  = new User("customer2",  "pass123", "Female", "IC012", 601111122, "c2@mail.com",  "PJ", Role.CUSTOMER, null);
-        User c3  = new User("customer3",  "pass123", "Male",   "IC013", 601111123, "c3@mail.com",  "PJ", Role.CUSTOMER, null);
-        User c4  = new User("customer4",  "pass123", "Female", "IC014", 601111124, "c4@mail.com",  "PJ", Role.CUSTOMER, null);
-        User c5  = new User("customer5",  "pass123", "Male",   "IC015", 601111125, "c5@mail.com",  "PJ", Role.CUSTOMER, null);
-        User c6  = new User("customer6",  "pass123", "Female", "IC016", 601111126, "c6@mail.com",  "PJ", Role.CUSTOMER, null);
-        User c7  = new User("customer7",  "pass123", "Male",   "IC017", 601111127, "c7@mail.com",  "PJ", Role.CUSTOMER, null);
-        User c8  = new User("customer8",  "pass123", "Female", "IC018", 601111128, "c8@mail.com",  "PJ", Role.CUSTOMER, null);
-        User c9  = new User("customer9",  "pass123", "Male",   "IC019", 601111129, "c9@mail.com",  "PJ", Role.CUSTOMER, null);
-        User c10 = new User("customer10", "pass123", "Female", "IC020", 601111130, "c10@mail.com", "PJ", Role.CUSTOMER, null);
+        User c1  = new User("customer1",  "pass123", "Male",   "010101010001", "0111111121", "c1@mail.com",  "PJ", Role.CUSTOMER, null);
+        User c2  = new User("customer2",  "pass123", "Female", "010101010002", "0111111122", "c2@mail.com",  "PJ", Role.CUSTOMER, null);
+        User c3  = new User("customer3",  "pass123", "Male",   "010101010003", "0111111123", "c3@mail.com",  "PJ", Role.CUSTOMER, null);
+        User c4  = new User("customer4",  "pass123", "Female", "010101010004", "0111111124", "c4@mail.com",  "PJ", Role.CUSTOMER, null);
+        User c5  = new User("customer5",  "pass123", "Male",   "010101010005", "0111111125", "c5@mail.com",  "PJ", Role.CUSTOMER, null);
+        User c6  = new User("customer6",  "pass123", "Female", "010101010006", "0111111126", "c6@mail.com",  "PJ", Role.CUSTOMER, null);
+        User c7  = new User("customer7",  "pass123", "Male",   "010101010007", "0111111127", "c7@mail.com",  "PJ", Role.CUSTOMER, null);
+        User c8  = new User("customer8",  "pass123", "Female", "010101010008", "0111111128", "c8@mail.com",  "PJ", Role.CUSTOMER, null);
+        User c9  = new User("customer9",  "pass123", "Male",   "010101010009", "0111111129", "c9@mail.com",  "PJ", Role.CUSTOMER, null);
+        User c10 = new User("customer10", "pass123", "Female", "010101010010", "0111111130", "c10@mail.com", "PJ", Role.CUSTOMER, null);        
         userFacade.create(manager1);
         userFacade.create(staff1); userFacade.create(staff2);
         userFacade.create(hk1); userFacade.create(hk2); userFacade.create(hk3);

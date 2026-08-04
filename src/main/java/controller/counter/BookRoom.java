@@ -78,18 +78,14 @@ public class BookRoom extends HttpServlet {
 
         // Show all or search
         String keyword = request.getParameter("keyword");
-        boolean showAll = "true".equals(request.getParameter("showAll"));
-        List<User> customers = null;
-
-        if (showAll) {
-            customers = userFacade.findAllCustomers();
-        } else if (keyword != null && !keyword.trim().isEmpty()) {
+        List<User> customers;
+        if (keyword != null && !keyword.trim().isEmpty()) {
             customers = userFacade.searchCustomers(keyword.trim());
+        } else {
+            customers = userFacade.findAllCustomers();
         }
-
         request.setAttribute("customers", customers);
-        request.getRequestDispatcher("/counter/bookRoom.jsp").forward(request, response);
-    }
+        request.getRequestDispatcher("/counter/bookRoom.jsp").forward(request, response);    }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -116,11 +112,14 @@ public class BookRoom extends HttpServlet {
 
         try {
             Long roomTypeId = Long.parseLong(roomTypeIdStr);
-
             LocalDate checkInDate = LocalDate.parse(checkInDateStr);
             LocalDate checkOutDate = LocalDate.parse(checkOutDateStr);
             LocalDate today = LocalDate.now();
             LocalDate maxDate = today.plusDays(5);
+
+            // Declare checkIn and checkOut here
+            LocalDateTime checkIn = checkInDate.atStartOfDay();
+            LocalDateTime checkOut = checkOutDate.atStartOfDay();
 
             // Validation
             if (checkInDate.isBefore(today)) {
@@ -139,6 +138,21 @@ public class BookRoom extends HttpServlet {
                 return;
             }
 
+            // Check duplicate only if not confirmed
+            String confirmed = request.getParameter("confirmed");
+            if (!"true".equals(confirmed)) {
+                if (bookingFacade.hasDuplicateRoomTypeBooking(customerId, roomTypeId, checkIn, checkOut)) {
+                    request.setAttribute("warning", "This customer already has a booking for this room type during the selected dates. Are you sure you want to book another one?");
+                    request.setAttribute("confirmBooking", true);
+                    request.setAttribute("customerId", customerId);
+                    request.setAttribute("roomTypeId", roomTypeId);
+                    request.setAttribute("checkInDate", checkInDateStr);
+                    request.setAttribute("checkOutDate", checkOutDateStr);
+                    request.getRequestDispatcher("/counter/bookRoom.jsp").forward(request, response);
+                    return;
+                }
+            }
+
             // Find available room of selected type
             List<Room> available = roomFacade.findAvailableByType(roomTypeId);
             if (available.isEmpty()) {
@@ -153,18 +167,13 @@ public class BookRoom extends HttpServlet {
             long nights = ChronoUnit.DAYS.between(checkInDate, checkOutDate);
             double payment = roomType.getRoomTypePrice() * nights;
 
-            LocalDateTime checkIn = checkInDate.atStartOfDay();
-            LocalDateTime checkOut = checkOutDate.atStartOfDay();
-
             Booking booking = new Booking(customer, staff, checkIn, checkOut,
                     payment, room, BookingStatus.UNPAID);
             bookingFacade.create(booking);
 
-            // Link customer to booking
             BookingUser bu = new BookingUser(booking, customer, BookingUserRole.CUSTOMER);
             bookingUserFacade.create(bu);
 
-            // Clear selected customer after success
             request.setAttribute("selectedCustomer", null);
             request.setAttribute("roomTypes", null);
             request.setAttribute("success", "Room " + room.getRoomNumber() +
@@ -175,7 +184,6 @@ public class BookRoom extends HttpServlet {
         } catch (Exception e) {
             request.setAttribute("error", "Booking failed: " + e.getMessage());
         }
-
         request.getRequestDispatcher("/counter/bookRoom.jsp").forward(request, response);
     }
 }

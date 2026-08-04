@@ -73,4 +73,25 @@ public class BookingFacade extends AbstractFacade<Booking> {
             .setParameter("status", Booking.BookingStatus.CHECKED_OUT)
             .getResultList();
     }
+    
+    public boolean hasDuplicateRoomTypeBooking(Long customerId, Long roomTypeId,
+            java.time.LocalDateTime checkIn, java.time.LocalDateTime checkOut) {
+        Long count = em.createQuery(
+                "SELECT COUNT(b) FROM Booking b WHERE b.customer.id = :customerId "
+                + "AND b.room.roomType.id = :roomTypeId "
+                + "AND b.bookingStatus IN :statuses "
+                + "AND b.estimatedCheckInTime < :checkOut "
+                + "AND b.estimatedCheckOutTime > :checkIn",
+                Long.class)
+                .setParameter("customerId", customerId)
+                .setParameter("roomTypeId", roomTypeId)
+                .setParameter("statuses", java.util.Arrays.asList(
+                        Booking.BookingStatus.UNPAID,
+                        Booking.BookingStatus.BOOKED,
+                        Booking.BookingStatus.CHECKED_IN))
+                .setParameter("checkIn", checkIn)
+                .setParameter("checkOut", checkOut)
+                .getSingleResult();
+        return count > 0;
+    }
 }

@@ -43,9 +43,13 @@ public class ManageCustomers extends HttpServlet {
             return;
         }
 
+        String success = request.getParameter("success");
+        if (success != null) {
+            request.setAttribute("success", success.replace("+", " "));
+        }
+
         String action = request.getParameter("action");
 
-        // Delete
         if ("delete".equals(action)) {
             Long id = Long.parseLong(request.getParameter("id"));
             User customer = userFacade.find(id);
@@ -59,7 +63,6 @@ public class ManageCustomers extends HttpServlet {
             return;
         }
 
-        // Load edit form
         if ("edit".equals(action)) {
             Long id = Long.parseLong(request.getParameter("id"));
             User customer = userFacade.find(id);
@@ -68,7 +71,6 @@ public class ManageCustomers extends HttpServlet {
             return;
         }
 
-        // Search or show all
         String keyword = request.getParameter("keyword");
         List<User> customers;
         if (keyword != null && !keyword.trim().isEmpty()) {
@@ -100,21 +102,35 @@ public class ManageCustomers extends HttpServlet {
             String name = request.getParameter("name").trim();
             String gender = request.getParameter("gender");
             String identification = request.getParameter("identification").trim();
-            String phoneStr = request.getParameter("phone").trim();
+            String phone = request.getParameter("phone").trim();
             String email = request.getParameter("email").trim();
             String address = request.getParameter("address").trim();
 
-            int phone;
-            try {
-                phone = Integer.parseInt(phoneStr);
-            } catch (NumberFormatException e) {
-                request.setAttribute("error", "Phone must be a number.");
+            // IC must be 12 digits
+            if (!identification.matches("\\d{12}")) {
+                request.setAttribute("error", "IC must be exactly 12 digits.");
                 request.setAttribute("customer", customer);
                 request.getRequestDispatcher("/counter/editCustomer.jsp").forward(request, response);
                 return;
             }
 
-            // Check duplicate IC — exclude current customer
+            // Phone validation
+            if (!phone.matches("^[0-9]{10,11}$")) {
+                request.setAttribute("error", "Phone must be 10-11 digits.");
+                request.setAttribute("customer", customer);
+                request.getRequestDispatcher("/counter/editCustomer.jsp").forward(request, response);
+                return;
+            }
+
+            // Email format
+            if (!email.isEmpty() && !email.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}$")) {
+                request.setAttribute("error", "Invalid email format.");
+                request.setAttribute("customer", customer);
+                request.getRequestDispatcher("/counter/editCustomer.jsp").forward(request, response);
+                return;
+            }
+
+            // Check duplicate IC
             User existing = userFacade.findByIdentification(identification);
             if (existing != null && !existing.getId().equals(id)) {
                 request.setAttribute("error", "Another customer already has this IC.");
@@ -131,10 +147,8 @@ public class ManageCustomers extends HttpServlet {
             customer.setAddress(address);
             userFacade.edit(customer);
 
-            request.setAttribute("success", "Customer updated successfully.");
-            List<User> customers = userFacade.findAllCustomers();
-            request.setAttribute("customers", customers);
-            request.getRequestDispatcher("/counter/manageCustomers.jsp").forward(request, response);
+            response.sendRedirect(request.getContextPath() +
+                "/counter/ManageCustomers?success=Customer+" + name + "+updated+successfully.");
         }
     }
 }

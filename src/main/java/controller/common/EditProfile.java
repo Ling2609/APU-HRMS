@@ -49,21 +49,35 @@ public class EditProfile extends HttpServlet {
             String name = request.getParameter("name").trim();
             String gender = request.getParameter("gender");
             String identification = request.getParameter("identification").trim();
-            String phoneStr = request.getParameter("phone").trim();
+            String phone = request.getParameter("phone").trim();
             String email = request.getParameter("email").trim();
             String address = request.getParameter("address").trim();
 
-            if (name.isEmpty()) {
-                request.setAttribute("error", "Name cannot be empty.");
+            // All fields required
+            if (name.isEmpty() || identification.isEmpty() || phone.isEmpty() 
+                    || email.isEmpty() || address.isEmpty()) {
+                request.setAttribute("error", "All fields are required.");
                 request.getRequestDispatcher("/common/editProfile.jsp").forward(request, response);
                 return;
             }
 
-            int phone;
-            try {
-                phone = Integer.parseInt(phoneStr);
-            } catch (NumberFormatException e) {
-                request.setAttribute("error", "Phone must be a number.");
+            // IC must be 12 digits numbers only
+            if (!identification.matches("\\d{12}")) {
+                request.setAttribute("error", "IC must be exactly 12 digits (numbers only).");
+                request.getRequestDispatcher("/common/editProfile.jsp").forward(request, response);
+                return;
+            }
+
+            // Phone must be 10-11 digits
+            if (!phone.matches("^[0-9]{10,11}$")) {
+                request.setAttribute("error", "Phone must be 10-11 digits.");
+                request.getRequestDispatcher("/common/editProfile.jsp").forward(request, response);
+                return;
+            }
+
+            // Email format
+            if (!email.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}$")) {
+                request.setAttribute("error", "Invalid email format.");
                 request.getRequestDispatcher("/common/editProfile.jsp").forward(request, response);
                 return;
             }

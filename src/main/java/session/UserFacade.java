@@ -54,7 +54,7 @@ public class UserFacade extends AbstractFacade<User> {
     
     public List<User> findAllCustomers() {
         return em.createQuery(
-            "SELECT u FROM User u WHERE u.role = :role ORDER BY u.name", User.class)
+            "SELECT u FROM User u WHERE u.role = :role ORDER BY u.id DESC", User.class)
             .setParameter("role", User.Role.CUSTOMER)
             .getResultList();
     }

@@ -37,7 +37,6 @@ public class RegisterCustomer extends HttpServlet {
 
         HttpSession session = request.getSession();
         User staff = (User) session.getAttribute("user");
-
         if (staff == null || staff.getRole() != User.Role.COUNTER_STAFF) {
             response.sendRedirect(request.getContextPath() + "/common/login.jsp");
             return;
@@ -47,7 +46,7 @@ public class RegisterCustomer extends HttpServlet {
         String password = request.getParameter("password").trim();
         String gender = request.getParameter("gender");
         String identification = request.getParameter("identification").trim();
-        String phoneStr = request.getParameter("phone").trim();
+        String phone = request.getParameter("phone").trim();
         String email = request.getParameter("email").trim();
         String address = request.getParameter("address").trim();
 
@@ -58,11 +57,23 @@ public class RegisterCustomer extends HttpServlet {
             return;
         }
 
-        int phone;
-        try {
-            phone = Integer.parseInt(phoneStr);
-        } catch (NumberFormatException e) {
-            request.setAttribute("error", "Phone must be a number.");
+        // IC must be 12 digits
+        if (!identification.matches("\\d{12}")) {
+            request.setAttribute("error", "IC must be exactly 12 digits.");
+            request.getRequestDispatcher("/counter/registerCustomer.jsp").forward(request, response);
+            return;
+        }
+
+        // Phone validation
+        if (!phone.matches("^[0-9]{10,11}$")) {
+            request.setAttribute("error", "Phone must be 10-11 digits.");
+            request.getRequestDispatcher("/counter/registerCustomer.jsp").forward(request, response);
+            return;
+        }
+
+        // Email format
+        if (!email.isEmpty() && !email.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}$")) {
+            request.setAttribute("error", "Invalid email format.");
             request.getRequestDispatcher("/counter/registerCustomer.jsp").forward(request, response);
             return;
         }
@@ -78,8 +89,7 @@ public class RegisterCustomer extends HttpServlet {
         User customer = new User(name, password, gender, identification,
                 phone, email, address, User.Role.CUSTOMER, null);
         userFacade.create(customer);
-
-        request.setAttribute("success", "Customer '" + name + "' registered successfully.");
-        request.getRequestDispatcher("/counter/registerCustomer.jsp").forward(request, response);
+        response.sendRedirect(request.getContextPath() +
+                "/counter/ManageCustomers?success=Customer+" + name + "+registered+successfully.");
     }
 }

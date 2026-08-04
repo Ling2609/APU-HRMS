@@ -42,6 +42,13 @@ public class Login extends HttpServlet {
         String name = request.getParameter("name");
         String password = request.getParameter("password");
 
+        if (name == null || name.trim().isEmpty() || 
+            password == null || password.trim().isEmpty()) {
+            request.setAttribute("error", "Username and password are required.");
+            request.getRequestDispatcher("/common/login.jsp").forward(request, response);
+            return;
+        }
+        
         User user = userFacade.findByNameAndPassword(name, password);
 
         if (user == null) {

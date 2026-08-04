@@ -30,11 +30,13 @@
         <p style="color:red;"><%= request.getAttribute("error") %></p>
     <% } %>
 
+    <a href="${pageContext.request.contextPath}/counter/registerCustomer.jsp">+ Register New Customer</a>
+    <br><br>
+    
     <h3>Search Customers</h3>
     <form method="get" action="${pageContext.request.contextPath}/counter/ManageCustomers">
         <input type="text" name="keyword" value="<%= keyword %>" placeholder="Search by name or IC" />
         <input type="submit" value="Search" />
-        <a href="${pageContext.request.contextPath}/counter/ManageCustomers">Show All</a>
     </form>
     <br>
     <% if (customers != null) { %>

@@ -24,7 +24,7 @@
         <li><a href="${pageContext.request.contextPath}/common/editProfile.jsp">Edit Profile</a></li>
         <li><a href="${pageContext.request.contextPath}/counter/registerCustomer.jsp">Register Customer</a></li>
         <li><a href="${pageContext.request.contextPath}/counter/ManageCustomers">Manage Customers</a></li>
-        <li><a href="${pageContext.request.contextPath}/counter/bookRoom.jsp">Book Room</a></li>
+        <li><a href="${pageContext.request.contextPath}/counter/BookRoom">Book Room</a></li>
         <li><a href="${pageContext.request.contextPath}/counter/ViewBookings">View All Bookings</a></li>
         <li><a href="${pageContext.request.contextPath}/counter/Receipt">Generate Receipt & Collect Payment</a></li>
         <li><a href="${pageContext.request.contextPath}/counter/CheckIn">Check In</a></li>

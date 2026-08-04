@@ -24,7 +24,7 @@ public class User implements Serializable {
 
     private String gender;
     private String identification;
-    private int phone;
+    private String phone;
     private String email;
     private String address;
 
@@ -37,7 +37,7 @@ public class User implements Serializable {
     public User() {}
 
     public User(String name, String password, String gender, String identification,
-                int phone, String email, String address, Role role, Double salary) {
+                String phone, String email, String address, Role role, Double salary) {
         this.name = name;
         this.password = password;
         this.gender = gender;
@@ -59,8 +59,8 @@ public class User implements Serializable {
     public void setGender(String gender) { this.gender = gender; }
     public String getIdentification() { return identification; }
     public void setIdentification(String identification) { this.identification = identification; }
-    public int getPhone() { return phone; }
-    public void setPhone(int phone) { this.phone = phone; }
+    public String getPhone() { return phone; }
+    public void setPhone(String phone) { this.phone = phone; }
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
     public String getAddress() { return address; }
