@@ -30,7 +30,6 @@
         <li><a href="${pageContext.request.contextPath}/counter/CheckIn">Check In</a></li>
         <li><a href="${pageContext.request.contextPath}/counter/CheckOut">Check Out</a></li>
         <li><a href="${pageContext.request.contextPath}/counter/AssignTask">Assign Cleaning Task</a></li>
-        <li><a href="${pageContext.request.contextPath}/counter/receipt.jsp">Generate Receipt</a></li>
     </ul>
     <hr>
     <a href="${pageContext.request.contextPath}/Logout">Logout</a>

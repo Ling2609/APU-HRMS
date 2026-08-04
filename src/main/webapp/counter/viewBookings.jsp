@@ -21,6 +21,10 @@
     <h2>All Bookings</h2>
     <a href="${pageContext.request.contextPath}/counter/home.jsp">Back to Home</a>
     <hr>
+    <% if (request.getAttribute("success") != null) {%>
+    <p style="color:green;"><%= request.getAttribute("success")%></p>
+    <% } %>
+    
     <% if (bookings == null || bookings.isEmpty()) { %>
         <p>No bookings found.</p>
     <% } else { %>

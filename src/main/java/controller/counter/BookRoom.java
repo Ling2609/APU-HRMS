@@ -174,13 +174,13 @@ public class BookRoom extends HttpServlet {
             BookingUser bu = new BookingUser(booking, customer, BookingUserRole.CUSTOMER);
             bookingUserFacade.create(bu);
 
-            request.setAttribute("selectedCustomer", null);
-            request.setAttribute("roomTypes", null);
-            request.setAttribute("success", "Room " + room.getRoomNumber() +
-                " booked for " + customer.getName() +
-                ". Total: RM" + String.format("%.2f", payment) +
-                " (" + nights + " night(s)). Status: UNPAID.");
-
+            response.sendRedirect(request.getContextPath()
+                    + "/counter/ViewBookings?success=Room+" + room.getRoomNumber()
+                    + "+booked+for+" + customer.getName()
+                    + ".+Total:+RM" + String.format("%.2f", payment)
+                    + "+(" + nights + "+night(s)).+Status:+UNPAID.");
+            return;
+            
         } catch (Exception e) {
             request.setAttribute("error", "Booking failed: " + e.getMessage());
         }

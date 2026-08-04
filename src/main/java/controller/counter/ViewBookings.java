@@ -42,6 +42,11 @@ public class ViewBookings extends HttpServlet {
             return;
         }
 
+        String success = request.getParameter("success");
+        if (success != null) {
+            request.setAttribute("success", success.replace("+", " "));
+        }
+        
         List<Booking> bookings = bookingFacade.findAllBookings();
         request.setAttribute("bookings", bookings);
         request.getRequestDispatcher("/counter/viewBookings.jsp").forward(request, response);
