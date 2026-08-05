@@ -46,6 +46,11 @@ public class AssignTask extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/common/login.jsp");
             return;
         }
+        
+        String success = request.getParameter("success");
+        if (success != null) {
+            request.setAttribute("success", success.replace("+", " "));
+        }
 
         String action = request.getParameter("action");
 

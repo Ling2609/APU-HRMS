@@ -65,10 +65,12 @@ public class CheckOut extends HttpServlet {
                 room.setRoomStatus(RoomStatus.CLEANING);
                 roomFacade.edit(room);
 
-                request.setAttribute("success", "Check-out successful for " +
-                    booking.getCustomer().getName() +
-                    " - Room " + room.getRoomNumber() +
-                    ". Room is now marked for cleaning.");
+                response.sendRedirect(request.getContextPath() + 
+                    "/counter/AssignTask?success=Check-out+successful+for+" + 
+                    booking.getCustomer().getName() + 
+                    ".+Room+" + room.getRoomNumber() + 
+                    "+is+now+marked+for+cleaning.");
+                return;
             }
         }
 

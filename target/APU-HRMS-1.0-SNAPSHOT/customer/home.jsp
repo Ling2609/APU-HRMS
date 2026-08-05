@@ -9,18 +9,45 @@
 %>
 <!DOCTYPE html>
 <html>
-<head><title>Customer Home</title></head>
+<head>
+    <title>Customer - Home</title>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/common/style.css" />
+</head>
 <body>
-    <h2>Customer Portal</h2>
-    <p>Welcome, <%= user.getName() %></p>
-    <hr>
-    <ul>
-        <li><a href="${pageContext.request.contextPath}/common/editProfile.jsp">Edit Profile</a></li>
-        <li><a href="${pageContext.request.contextPath}/customer/MyBookings">My Bookings & Payment History</a></li>
-        <li><a href="${pageContext.request.contextPath}/customer/WriteComment">Write Comment</a></li>
-        <li><a href="${pageContext.request.contextPath}/customer/ViewComments">View My Comments</a></li>
-    </ul>
-    <hr>
-    <a href="${pageContext.request.contextPath}/Logout">Logout</a>
+    <div class="navbar">
+        <h1>APU Hotel</h1>
+        <div class="nav-right">
+            Welcome, <%= user.getName() %>
+            <a href="${pageContext.request.contextPath}/Logout">Logout</a>
+        </div>
+    </div>
+    <div class="container">
+        <div class="welcome-box">
+            <h2>Welcome, <%= user.getName() %></h2>
+            <p>Customer Portal</p>
+        </div>
+        <div class="card-grid" style="grid-template-columns: repeat(2, 1fr);">
+            <a href="${pageContext.request.contextPath}/common/editProfile.jsp" class="card">
+                <div class="card-icon">👤</div>
+                <h3>Edit Profile</h3>
+                <p>Update your personal information</p>
+            </a>
+            <a href="${pageContext.request.contextPath}/customer/MyBookings" class="card">
+                <div class="card-icon">📋</div>
+                <h3>My Bookings</h3>
+                <p>View booking and payment history</p>
+            </a>
+            <a href="${pageContext.request.contextPath}/customer/WriteComment" class="card">
+                <div class="card-icon">⭐</div>
+                <h3>Write Comment</h3>
+                <p>Rate and review your stay</p>
+            </a>
+            <a href="${pageContext.request.contextPath}/customer/ViewComments" class="card">
+                <div class="card-icon">💬</div>
+                <h3>View My Comments</h3>
+                <p>View all your submitted comments</p>
+            </a>
+        </div>
+    </div>
 </body>
 </html>

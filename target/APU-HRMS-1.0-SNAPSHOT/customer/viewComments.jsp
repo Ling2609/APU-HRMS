@@ -16,32 +16,53 @@
 %>
 <!DOCTYPE html>
 <html>
-<head><title>My Comments</title></head>
+<head>
+    <title>My Comments</title>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/common/style.css" />
+</head>
 <body>
-    <h2>My Comments</h2>
-    <a href="${pageContext.request.contextPath}/customer/home.jsp">Back to Home</a>
-    <hr>
-    <% if (comments == null || comments.isEmpty()) { %>
-        <p>No comments yet.</p>
-    <% } else { %>
-        <table border="1" cellpadding="5">
-            <tr>
-                <th>Booking ID</th>
-                <th>Room</th>
-                <th>Room Type</th>
-                <th>Rating</th>
-                <th>Comment</th>
-            </tr>
-            <% for (Message m : comments) { %>
-            <tr>
-                <td><%= m.getBookingUser().getBooking().getId() %></td>
-                <td><%= m.getBookingUser().getBooking().getRoom().getRoomNumber() %></td>
-                <td><%= m.getBookingUser().getBooking().getRoom().getRoomType().getRoomTypeName() %></td>
-                <td><%= m.getRating() %> / 5</td>
-                <td><%= m.getMessageContent() %></td>
-            </tr>
-            <% } %>
-        </table>
-    <% } %>
+    <div class="navbar">
+        <h1>APU Hotel</h1>
+        <div class="nav-right">
+            Welcome, <%= user.getName() %>
+            <a href="${pageContext.request.contextPath}/customer/home.jsp">Home</a>
+            <a href="${pageContext.request.contextPath}/Logout">Logout</a>
+        </div>
+    </div>
+    <div class="container">
+        <div class="page-title">My Comments</div>
+        <br>
+        <% if (comments == null || comments.isEmpty()) { %>
+            <p>No comments yet.</p>
+        <% } else { %>
+            <div class="table-wrapper">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Booking ID</th>
+                            <th>Room</th>
+                            <th>Room Type</th>
+                            <th>Rating</th>
+                            <th>Comment</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% for (Message m : comments) { %>
+                        <tr>
+                            <td><%= m.getBookingUser().getBooking().getId() %></td>
+                            <td><%= m.getBookingUser().getBooking().getRoom().getRoomNumber() %></td>
+                            <td><%= m.getBookingUser().getBooking().getRoom().getRoomType().getRoomTypeName() %></td>
+                            <td>
+                                <% int rating = m.getRating(); %>
+                                <%= rating %> ⭐
+                            </td>
+                            <td style="white-space: normal;"><%= m.getMessageContent() %></td>
+                        </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+        <% } %>
+    </div>
 </body>
 </html>

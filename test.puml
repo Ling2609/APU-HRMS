@@ -1,0 +1,76 @@
+@startuml
+annotation entity.Column
+annotation entity.Entity
+annotation entity.Enumerated
+annotation entity.GeneratedValue
+annotation entity.Id
+annotation entity.JoinColumn
+annotation entity.ManyToOne
+annotation entity.SequenceGenerator
+annotation entity.Table
+class entity.Booking
+class entity.BookingUser
+class entity.Message
+class entity.Room
+class entity.RoomType
+class entity.User
+class java.time.LocalDateTime
+interface java.io.Serializable
+entity.Booking ..> entity.Column
+entity.Booking ..> entity.Entity
+entity.Booking ..> entity.Enumerated
+entity.Booking ..> entity.GeneratedValue
+entity.Booking ..> entity.Id
+entity.Booking ..> entity.JoinColumn
+entity.Booking ..> entity.ManyToOne
+entity.Booking ..> entity.SequenceGenerator
+entity.Booking ..> entity.Table
+entity.Booking ..> java.time.LocalDateTime
+entity.Booking --|> java.io.Serializable
+entity.BookingUser ..> entity.Column
+entity.BookingUser ..> entity.Entity
+entity.BookingUser ..> entity.Enumerated
+entity.BookingUser ..> entity.GeneratedValue
+entity.BookingUser ..> entity.Id
+entity.BookingUser ..> entity.JoinColumn
+entity.BookingUser ..> entity.ManyToOne
+entity.BookingUser ..> entity.SequenceGenerator
+entity.BookingUser ..> entity.Table
+entity.BookingUser --|> java.io.Serializable
+entity.Message ..> entity.Column
+entity.Message ..> entity.Entity
+entity.Message ..> entity.Enumerated
+entity.Message ..> entity.GeneratedValue
+entity.Message ..> entity.Id
+entity.Message ..> entity.JoinColumn
+entity.Message ..> entity.ManyToOne
+entity.Message ..> entity.SequenceGenerator
+entity.Message ..> entity.Table
+entity.Message --|> java.io.Serializable
+entity.Room ..> entity.Column
+entity.Room ..> entity.Entity
+entity.Room ..> entity.Enumerated
+entity.Room ..> entity.GeneratedValue
+entity.Room ..> entity.Id
+entity.Room ..> entity.JoinColumn
+entity.Room ..> entity.ManyToOne
+entity.Room ..> entity.SequenceGenerator
+entity.Room ..> entity.Table
+entity.Room --|> java.io.Serializable
+entity.RoomType ..> entity.Column
+entity.RoomType ..> entity.Entity
+entity.RoomType ..> entity.Enumerated
+entity.RoomType ..> entity.GeneratedValue
+entity.RoomType ..> entity.Id
+entity.RoomType ..> entity.SequenceGenerator
+entity.RoomType ..> entity.Table
+entity.RoomType --|> java.io.Serializable
+entity.User ..> entity.Column
+entity.User ..> entity.Entity
+entity.User ..> entity.Enumerated
+entity.User ..> entity.GeneratedValue
+entity.User ..> entity.Id
+entity.User ..> entity.SequenceGenerator
+entity.User ..> entity.Table
+entity.User --|> java.io.Serializable
+@enduml

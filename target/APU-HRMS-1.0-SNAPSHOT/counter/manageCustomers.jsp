@@ -18,61 +18,72 @@
 %>
 <!DOCTYPE html>
 <html>
-<head><title>Manage Customers</title></head>
+<head>
+    <title>Manage Customers</title>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/common/style.css" />
+</head>
 <body>
-    <h2>Manage Customers</h2>
-    <a href="${pageContext.request.contextPath}/counter/home.jsp">Back to Home</a>
-    <hr>
-    <% if (request.getAttribute("success") != null) { %>
-        <p style="color:green;"><%= request.getAttribute("success") %></p>
-    <% } %>
-    <% if (request.getAttribute("error") != null) { %>
-        <p style="color:red;"><%= request.getAttribute("error") %></p>
-    <% } %>
+    <div class="navbar">
+        <h1>APU Hotel</h1>
+        <div class="nav-right">
+            Welcome, <%= user.getName()%>
+            <a href="${pageContext.request.contextPath}/counter/home.jsp">Home</a>
+            <a href="${pageContext.request.contextPath}/Logout">Logout</a>
+        </div>
+    </div>
+    <div class="container">
+        <div class="page-title">Manage Customers</div>
 
-    <a href="${pageContext.request.contextPath}/counter/registerCustomer.jsp">+ Register New Customer</a>
-    <br><br>
-    
-    <h3>Search Customers</h3>
-    <form method="get" action="${pageContext.request.contextPath}/counter/ManageCustomers">
-        <input type="text" name="keyword" value="<%= keyword %>" placeholder="Search by name or IC" />
-        <input type="submit" value="Search" />
-    </form>
-    <br>
-    <% if (customers != null) { %>
-        <% if (customers.isEmpty()) { %>
-            <p>No customers found.</p>
-        <% } else { %>
-            <table border="1" cellpadding="5">
-                <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Gender</th>
-                    <th>IC</th>
-                    <th>Phone</th>
-                    <th>Email</th>
-                    <th>Address</th>
-                    <th>Actions</th>
-                </tr>
-                <% for (User c : customers) { %>
-                <tr>
-                    <td><%= c.getId() %></td>
-                    <td><%= c.getName() %></td>
-                    <td><%= c.getGender() != null ? c.getGender() : "" %></td>
-                    <td><%= c.getIdentification() != null ? c.getIdentification() : "" %></td>
-                    <td><%= c.getPhone() %></td>
-                    <td><%= c.getEmail() != null ? c.getEmail() : "" %></td>
-                    <td><%= c.getAddress() != null ? c.getAddress() : "" %></td>
-                    <td>
-                        <a href="${pageContext.request.contextPath}/counter/ManageCustomers?action=edit&id=<%= c.getId() %>">Edit</a>
-                        &nbsp;|&nbsp;
-                        <a href="${pageContext.request.contextPath}/counter/ManageCustomers?action=delete&id=<%= c.getId() %>"
-                           onclick="return confirm('Delete this customer?')">Delete</a>
-                    </td>
-                </tr>
-                <% } %>
-            </table>
+        <% if (request.getAttribute("success") != null) {%>
+        <div class="msg-success"><%= request.getAttribute("success")%></div>
         <% } %>
-    <% } %>
+        <% if (request.getAttribute("error") != null) {%>
+        <div class="msg-error"><%= request.getAttribute("error")%></div>
+        <% }%>
+
+        <div class="search-bar">
+            <form method="get" action="${pageContext.request.contextPath}/counter/ManageCustomers" style="display:flex; gap:10px;">
+                <input type="text" name="keyword" value="<%= keyword%>" placeholder="Search by name or IC" />
+                <button type="submit" class="btn btn-primary">Search</button>
+            </form>
+            <a href="${pageContext.request.contextPath}/counter/registerCustomer.jsp" class="btn btn-gold">+ Register New Customer</a>
+        </div>
+
+        <% if (customers != null) { %>
+            <% if (customers.isEmpty()) { %>
+                <p>No customers found.</p>
+            <% } else { %>
+                <table class="data-table">
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Gender</th>
+                        <th>IC</th>
+                        <th>Phone</th>
+                        <th>Email</th>
+                        <th>Address</th>
+                        <th>Actions</th>
+                    </tr>
+                    <% for (User c : customers) { %>
+                    <tr>
+                        <td><%= c.getId() %></td>
+                        <td><%= c.getName() %></td>
+                        <td><%= c.getGender() != null ? c.getGender() : "" %></td>
+                        <td><%= c.getIdentification() != null ? c.getIdentification() : "" %></td>
+                        <td><%= c.getPhone() %></td>
+                        <td><%= c.getEmail() != null ? c.getEmail() : "" %></td>
+                        <td><%= c.getAddress() != null ? c.getAddress() : "" %></td>
+                        <td>
+                            <a href="${pageContext.request.contextPath}/counter/ManageCustomers?action=edit&id=<%= c.getId() %>" class="action-link">Edit</a>
+                            <a href="${pageContext.request.contextPath}/counter/ManageCustomers?action=delete&id=<%= c.getId() %>"
+                               class="action-link-danger"
+                               onclick="return confirm('Delete this customer?')">Delete</a>
+                        </td>
+                    </tr>
+                    <% } %>
+                </table>
+            <% } %>
+        <% } %>
+    </div>
 </body>
 </html>

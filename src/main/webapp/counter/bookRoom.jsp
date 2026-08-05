@@ -20,105 +20,126 @@
 %>
 <!DOCTYPE html>
 <html>
-<head><title>Book Room</title></head>
+<head>
+    <title>Book Room</title>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/common/style.css" />
+</head>
 <body>
-    <h2>Book Room</h2>
-    <a href="${pageContext.request.contextPath}/counter/home.jsp">Back to Home</a>
-    <hr>
-    <% if (request.getAttribute("success") != null) { %>
-        <p style="color:green;"><%= request.getAttribute("success") %></p>
-    <% } %>
-    <% if (request.getAttribute("error") != null) { %>
-        <p style="color:red;"><%= request.getAttribute("error") %></p>
-    <% } %>
+    <div class="navbar">
+        <h1>APU Hotel</h1>
+        <div class="nav-right">
+            Welcome, <%= user.getName() %>
+            <a href="${pageContext.request.contextPath}/counter/home.jsp">Home</a>
+            <a href="${pageContext.request.contextPath}/Logout">Logout</a>
+        </div>
+    </div>
+    <div class="container">
+        <% if (request.getAttribute("success") != null) { %>
+            <div class="msg-success"><%= request.getAttribute("success") %></div>
+        <% } %>
+        <% if (request.getAttribute("error") != null) { %>
+            <div class="msg-error"><%= request.getAttribute("error") %></div>
+        <% } %>
 
-    <% if (selectedCustomer == null) { %>
-        <%-- Step 1: Search customer --%>
-        <h3>Search Customer</h3>
-        <form method="get" action="${pageContext.request.contextPath}/counter/BookRoom">
-            <input type="text" name="keyword" value="<%= keyword %>" placeholder="Search by name or IC" />
-            <input type="submit" value="Search" />
-        </form>
-        <br>
-        <% if (customers != null) { %>
-            <% if (customers.isEmpty()) { %>
-                <p>No customers found.</p>
+        <% if (selectedCustomer == null) { %>
+            <%-- Step 1: Search customer --%>
+            <div class="page-title">Book Room</div>
+            <br>
+            <div class="search-bar">
+                <form method="get" action="${pageContext.request.contextPath}/counter/BookRoom" style="display:flex; gap:10px;">
+                    <input type="text" name="keyword" value="<%= keyword %>" placeholder="Search by name or IC" />
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </form>
+            </div>
+            <% if (customers != null) { %>
+                <% if (customers.isEmpty()) { %>
+                    <p>No customers found.</p>
+                <% } else { %>
+                    <div class="table-wrapper">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>IC</th>
+                                    <th>Phone</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% for (User c : customers) { %>
+                                <tr>
+                                    <td><%= c.getName() %></td>
+                                    <td><%= c.getIdentification() != null ? c.getIdentification() : "" %></td>
+                                    <td><%= c.getPhone() %></td>
+                                    <td>
+                                        <a href="${pageContext.request.contextPath}/counter/BookRoom?action=select&customerId=<%= c.getId() %>" class="action-link">Book for this customer</a>
+                                    </td>
+                                </tr>
+                                <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                <% } %>
+            <% } %>
+
+        <% } else { %>
+            <%-- Step 2: Booking form --%>
+            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 3px solid #b8860b; padding-bottom: 8px; margin-bottom: 20px;">
+                <div class="page-title" style="border:none; margin:0; padding:0;">Book Room</div>
+                <a href="${pageContext.request.contextPath}/counter/BookRoom" class="breadcrumb-link">← Back to customer list</a>
+            </div>
+            
+            <% if (request.getAttribute("warning") != null) { %>
+                <div class="msg-warning"><%= request.getAttribute("warning") %></div>
+                <form method="post" action="${pageContext.request.contextPath}/counter/BookRoom">
+                    <input type="hidden" name="customerId" value="<%= request.getAttribute("customerId") %>" />
+                    <input type="hidden" name="roomTypeId" value="<%= request.getAttribute("roomTypeId") %>" />
+                    <input type="hidden" name="checkInDate" value="<%= request.getAttribute("checkInDate") %>" />
+                    <input type="hidden" name="checkOutDate" value="<%= request.getAttribute("checkOutDate") %>" />
+                    <input type="hidden" name="confirmed" value="true" />
+                    <div style="margin-top:15px;">
+                        <button type="submit" class="btn btn-gold">Yes, Book Anyway</button>
+                        &nbsp;
+                        <a href="${pageContext.request.contextPath}/counter/BookRoom" class="btn btn-primary">Cancel</a>
+                    </div>
+                </form>
             <% } else { %>
-                <table border="1" cellpadding="5">
-                    <tr>
-                        <th>Name</th>
-                        <th>IC</th>
-                        <th>Phone</th>
-                        <th>Action</th>
-                    </tr>
-                    <% for (User c : customers) { %>
-                    <tr>
-                        <td><%= c.getName() %></td>
-                        <td><%= c.getIdentification() != null ? c.getIdentification() : "" %></td>
-                        <td><%= c.getPhone() %></td>
-                        <td>
-                            <a href="${pageContext.request.contextPath}/counter/BookRoom?action=select&customerId=<%= c.getId() %>">
-                                Book for this customer
-                            </a>
-                        </td>
-                    </tr>
-                    <% } %>
-                </table>
+                <div class="form-container">
+                    <p style="color:#1a237e; font-weight:bold; margin-bottom:20px; padding-bottom:10px; border-bottom:2px solid #f0f0f0;">
+                        Booking for: <%= selectedCustomer.getName() %> (IC: <%= selectedCustomer.getIdentification() %>)
+                    </p>
+                    <form method="post" action="${pageContext.request.contextPath}/counter/BookRoom">
+                        <input type="hidden" name="customerId" value="<%= selectedCustomer.getId() %>" />
+                        <table class="form-table">
+                            <tr>
+                                <td>Room Type:</td>
+                                <td>
+                                    <select name="roomTypeId" required>
+                                        <option value="">-- Select Room Type --</option>
+                                        <% if (roomTypes != null) { for (RoomType rt : roomTypes) { %>
+                                            <option value="<%= rt.getId() %>">
+                                                <%= rt.getRoomTypeName() %> - RM<%= rt.getRoomTypePrice() %>/night
+                                            </option>
+                                        <% } } %>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Estimated Check-in Date:</td>
+                                <td><input type="date" name="checkInDate" required /></td>
+                            </tr>
+                            <tr>
+                                <td>Estimated Check-out Date:</td>
+                                <td><input type="date" name="checkOutDate" required /></td>
+                            </tr>
+                        </table>
+                        <div style="text-align:center; margin-top:20px;">
+                            <button type="submit" class="btn btn-primary" style="width:200px;">Book Room</button>
+                        </div>
+                    </form>
+                </div>
             <% } %>
         <% } %>
-
-        <% } else {%>
-        <%-- Step 2: Booking form for selected customer --%>
-        <h3>Booking for: <%= selectedCustomer.getName()%> (IC: <%= selectedCustomer.getIdentification()%>)</h3>
-        <a href="${pageContext.request.contextPath}/counter/BookRoom">← Back to customer search</a>
-        <br><br>
-
-        <% if (request.getAttribute("warning") != null) {%>
-        <p style="color:orange;"><%= request.getAttribute("warning")%></p>
-        <form method="post" action="${pageContext.request.contextPath}/counter/BookRoom">
-            <input type="hidden" name="customerId" value="<%= request.getAttribute("customerId")%>" />
-            <input type="hidden" name="roomTypeId" value="<%= request.getAttribute("roomTypeId")%>" />
-            <input type="hidden" name="checkInDate" value="<%= request.getAttribute("checkInDate")%>" />
-            <input type="hidden" name="checkOutDate" value="<%= request.getAttribute("checkOutDate")%>" />
-            <input type="hidden" name="confirmed" value="true" />
-            <input type="submit" value="Yes, Book Anyway" />
-            &nbsp;
-            <a href="${pageContext.request.contextPath}/counter/BookRoom">Cancel</a>
-        </form>
-        <% } else {%>
-        <form method="post" action="${pageContext.request.contextPath}/counter/BookRoom">
-            <input type="hidden" name="customerId" value="<%= selectedCustomer.getId()%>" />
-            <table>
-                <tr>
-                    <td>Room Type:</td>
-                    <td>
-                        <select name="roomTypeId" required>
-                            <option value="">-- Select Room Type --</option>
-                            <% if (roomTypes != null) {
-                                        for (RoomType rt : roomTypes) {%>
-                            <option value="<%= rt.getId()%>">
-                                <%= rt.getRoomTypeName()%> - RM<%= rt.getRoomTypePrice()%>/night
-                            </option>
-                            <% }
-                                    } %>
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Estimated Check-in Date:</td>
-                    <td><input type="date" name="checkInDate" required /></td>
-                </tr>
-                <tr>
-                    <td>Estimated Check-out Date:</td>
-                    <td><input type="date" name="checkOutDate" required /></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td><input type="submit" value="Book Room" /></td>
-                </tr>
-            </table>
-        </form>
-        <% } %>
-        <% }%>
+    </div>
 </body>
 </html>
