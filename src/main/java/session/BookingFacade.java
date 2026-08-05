@@ -94,4 +94,19 @@ public class BookingFacade extends AbstractFacade<Booking> {
                 .getSingleResult();
         return count > 0;
     }
+    
+    public void updateLateBookings() {
+        List<Booking> booked = em.createQuery(
+                "SELECT b FROM Booking b WHERE b.bookingStatus = :status "
+                + "AND b.estimatedCheckInTime < :now",
+                Booking.class)
+                .setParameter("status", Booking.BookingStatus.BOOKED)
+                .setParameter("now", java.time.LocalDateTime.now())
+                .getResultList();
+
+        for (Booking b : booked) {
+            b.setBookingStatus(Booking.BookingStatus.LATE);
+            em.merge(b);
+        }
+    }
 }

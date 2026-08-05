@@ -11,6 +11,7 @@ C:\Users\Ling\Desktop\APU-HRMS\src\main\java\entity\Booking.java
 C:\Users\Ling\Desktop\APU-HRMS\src\main\java\com\apuhrms\apu\hrms\JakartaRestConfiguration.java
 C:\Users\Ling\Desktop\APU-HRMS\src\main\java\controller\customer\MyBookings.java
 C:\Users\Ling\Desktop\APU-HRMS\src\main\java\entity\RoomType.java
+C:\Users\Ling\Desktop\APU-HRMS\src\main\java\controller\counter\CancelBooking.java
 C:\Users\Ling\Desktop\APU-HRMS\src\main\java\controller\counter\ViewBookings.java
 C:\Users\Ling\Desktop\APU-HRMS\src\main\java\entity\Message.java
 C:\Users\Ling\Desktop\APU-HRMS\src\main\java\session\BookingFacade.java

@@ -5,7 +5,7 @@
 --%>
 
 <%@ page contentType="text/html;charset=UTF-8" %>
-<%@ page import="entity.User, entity.RoomType, java.util.List" %>
+<%@ page import="entity.User, entity.RoomType, java.util.List, java.util.Map" %>
 <%
     User user = (User) session.getAttribute("user");
     if (user == null || user.getRole() != User.Role.COUNTER_STAFF) {
@@ -15,6 +15,9 @@
     List<User> customers = (List<User>) request.getAttribute("customers");
     List<RoomType> roomTypes = (List<RoomType>) request.getAttribute("roomTypes");
     User selectedCustomer = (User) request.getAttribute("selectedCustomer");
+    Map<Long, Long> availableCounts = (Map<Long, Long>) request.getAttribute("availableCounts");
+        if (availableCounts == null)
+            availableCounts = new java.util.HashMap<>();
     String keyword = request.getParameter("keyword");
     if (keyword == null) keyword = "";
 %>
@@ -116,9 +119,11 @@
                                 <td>
                                     <select name="roomTypeId" required>
                                         <option value="">-- Select Room Type --</option>
-                                        <% if (roomTypes != null) { for (RoomType rt : roomTypes) { %>
-                                            <option value="<%= rt.getId() %>">
-                                                <%= rt.getRoomTypeName() %> - RM<%= rt.getRoomTypePrice() %>/night
+                                        <% if (roomTypes != null) { for (RoomType rt : roomTypes) { 
+                                            long count = availableCounts.getOrDefault(rt.getId(), 0L); %>
+                                            <option value="<%= rt.getId() %>" <%= count == 0 ? "disabled" : "" %>>
+                                                <%= rt.getRoomTypeName() %> - RM<%= String.format("%.2f", rt.getRoomTypePrice()) %>/night
+                                                (<%= count %> available)
                                             </option>
                                         <% } } %>
                                     </select>

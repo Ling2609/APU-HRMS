@@ -70,8 +70,14 @@ public class BookRoom extends HttpServlet {
             Long customerId = Long.parseLong(request.getParameter("customerId"));
             User selectedCustomer = userFacade.find(customerId);
             List<RoomType> roomTypes = roomTypeFacade.findAllRoomTypes();
+
+            java.util.Map<Long, Long> availableCounts = new java.util.HashMap<>();
+            for (RoomType rt : roomTypes) {
+                availableCounts.put(rt.getId(), roomTypeFacade.countRoomsByType(rt.getId()));
+            }
             request.setAttribute("selectedCustomer", selectedCustomer);
             request.setAttribute("roomTypes", roomTypes);
+            request.setAttribute("availableCounts", availableCounts);
             request.getRequestDispatcher("/counter/bookRoom.jsp").forward(request, response);
             return;
         }
@@ -138,6 +144,13 @@ public class BookRoom extends HttpServlet {
                 return;
             }
 
+            long nights = ChronoUnit.DAYS.between(checkInDate, checkOutDate);
+            if (nights > 30) {
+                request.setAttribute("error", "Maximum stay is 30 nights.");
+                request.getRequestDispatcher("/counter/bookRoom.jsp").forward(request, response);
+                return;
+            }
+            
             // Check duplicate only if not confirmed
             String confirmed = request.getParameter("confirmed");
             if (!"true".equals(confirmed)) {
@@ -154,7 +167,7 @@ public class BookRoom extends HttpServlet {
             }
 
             // Find available room of selected type
-            List<Room> available = roomFacade.findAvailableByType(roomTypeId);
+            List<Room> available = roomFacade.findAvailableByTypeAndDates(roomTypeId, checkIn, checkOut);
             if (available.isEmpty()) {
                 request.setAttribute("error", "No available rooms of this type. Please choose another type.");
                 request.getRequestDispatcher("/counter/bookRoom.jsp").forward(request, response);
@@ -164,7 +177,6 @@ public class BookRoom extends HttpServlet {
             Room room = available.get(0);
             RoomType roomType = roomTypeFacade.find(roomTypeId);
 
-            long nights = ChronoUnit.DAYS.between(checkInDate, checkOutDate);
             double payment = roomType.getRoomTypePrice() * nights;
 
             Booking booking = new Booking(customer, staff, checkIn, checkOut,

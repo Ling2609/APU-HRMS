@@ -19,6 +19,7 @@ entity\RoomType.class
 controller\counter\CheckOut.class
 session\RoomFacade.class
 controller\counter\Receipt.class
+controller\counter\CancelBooking.class
 entity\User$Role.class
 controller\common\Logout.class
 controller\counter\AssignTask.class

@@ -14,6 +14,7 @@ import jakarta.servlet.http.*;
 import session.*;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -33,8 +34,10 @@ public class CheckIn extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     
-    @EJB private BookingFacade bookingFacade;
-    @EJB private RoomFacade roomFacade;
+    @EJB
+    private BookingFacade bookingFacade;
+    @EJB
+    private RoomFacade roomFacade;
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -55,7 +58,8 @@ public class CheckIn extends HttpServlet {
 
             if (booking == null) {
                 request.setAttribute("error", "Booking not found.");
-            } else if (booking.getBookingStatus() != BookingStatus.BOOKED) {
+            } else if (booking.getBookingStatus() != BookingStatus.BOOKED
+                    && booking.getBookingStatus() != BookingStatus.LATE) {
                 request.setAttribute("error", "Payment must be collected before check-in.");
             } else {
                 booking.setCheckInTime(LocalDateTime.now());
@@ -64,14 +68,19 @@ public class CheckIn extends HttpServlet {
                 Room room = booking.getRoom();
                 room.setRoomStatus(RoomStatus.OCCUPIED);
                 roomFacade.edit(room);
-                request.setAttribute("success", "Check-in successful for " +
-                    booking.getCustomer().getName() +
-                    " - Room " + room.getRoomNumber());
+                request.setAttribute("success", "Check-in successful for "
+                        + booking.getCustomer().getName()
+                        + " - Room " + room.getRoomNumber());
             }
         }
 
-        // Only show BOOKED (payment collected) bookings
-        List<Booking> bookings = bookingFacade.findByStatus(BookingStatus.BOOKED);
+        // Update late bookings first
+        bookingFacade.updateLateBookings();
+
+        // Show BOOKED and LATE bookings
+        List<Booking> bookings = new ArrayList<>();
+        bookings.addAll(bookingFacade.findByStatus(BookingStatus.BOOKED));
+        bookings.addAll(bookingFacade.findByStatus(BookingStatus.LATE));
         request.setAttribute("bookings", bookings);
         request.getRequestDispatcher("/counter/checkIn.jsp").forward(request, response);
     }

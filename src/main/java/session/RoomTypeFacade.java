@@ -35,4 +35,13 @@ public class RoomTypeFacade extends AbstractFacade<RoomType> {
             entity.RoomType.class)
             .getResultList();
     }
+    
+    public long countRoomsByType(Long roomTypeId) {
+        return em.createQuery(
+                "SELECT COUNT(r) FROM Room r WHERE r.roomType.id = :typeId AND r.roomStatus = :status",
+                Long.class)
+                .setParameter("typeId", roomTypeId)
+                .setParameter("status", entity.Room.RoomStatus.FREE)
+                .getSingleResult();
+    }
 }

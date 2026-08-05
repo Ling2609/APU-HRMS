@@ -5,20 +5,19 @@
 package controller.counter;
 
 import entity.*;
+import entity.Booking.BookingStatus;
 import jakarta.ejb.EJB;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
-import session.BookingFacade;
+import session.*;
 import java.io.IOException;
-import java.util.List;
-
 /**
  *
  * @author Ling
  */
-@WebServlet(name = "ViewBookings", urlPatterns = {"/counter/ViewBookings"})
-public class ViewBookings extends HttpServlet {
+@WebServlet(name = "CancelBooking", urlPatterns = {"/counter/CancelBooking"})
+public class CancelBooking extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -30,6 +29,7 @@ public class ViewBookings extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @EJB private BookingFacade bookingFacade;
+    @EJB private BookingUserFacade bookingUserFacade;
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -42,17 +42,32 @@ public class ViewBookings extends HttpServlet {
             return;
         }
 
-        String success = request.getParameter("success");
-        if (success != null) {
-            request.setAttribute("success", success.replace("+", " "));
+        Long id = Long.parseLong(request.getParameter("id"));
+        Booking booking = bookingFacade.find(id);
+
+        if (booking == null) {
+            response.sendRedirect(request.getContextPath() + 
+                "/counter/ViewBookings?error=Booking+not+found.");
+            return;
         }
-        String error = request.getParameter("error");
-        if (error != null) {
-            request.setAttribute("error", error.replace("+", " "));
+
+        if (booking.getBookingStatus() != BookingStatus.UNPAID) {
+            response.sendRedirect(request.getContextPath() + 
+                "/counter/ViewBookings?error=Only+UNPAID+bookings+can+be+cancelled.");
+            return;
         }
-        
-        List<Booking> bookings = bookingFacade.findAllBookings();
-        request.setAttribute("bookings", bookings);
-        request.getRequestDispatcher("/counter/viewBookings.jsp").forward(request, response);
+
+        // Delete BookingUser first (foreign key constraint)
+        BookingUser bu = bookingUserFacade.findByBookingAndRole(
+            booking.getId(), BookingUser.BookingUserRole.CUSTOMER);
+        if (bu != null) {
+            bookingUserFacade.remove(bu);
+        }
+
+        // Delete booking
+        bookingFacade.remove(booking);
+
+        response.sendRedirect(request.getContextPath() + 
+            "/counter/ViewBookings?success=Booking+cancelled+successfully.");
     }
 }

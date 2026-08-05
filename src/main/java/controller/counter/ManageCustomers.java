@@ -106,6 +106,12 @@ public class ManageCustomers extends HttpServlet {
             String email = request.getParameter("email").trim();
             String address = request.getParameter("address").trim();
 
+            if (name.length() < 2) {
+                request.setAttribute("error", "Name must be at least 2 characters.");
+                request.getRequestDispatcher("/counter/registerCustomer.jsp").forward(request, response);
+                return;
+            }
+            
             // IC must be 12 digits
             if (!identification.matches("\\d{12}")) {
                 request.setAttribute("error", "IC must be exactly 12 digits.");

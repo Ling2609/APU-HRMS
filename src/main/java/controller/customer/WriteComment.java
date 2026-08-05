@@ -116,6 +116,14 @@ public class WriteComment extends HttpServlet {
             request.getRequestDispatcher("/customer/writeComment.jsp").forward(request, response);
             return;
         }
+        
+        if (comment.length() < 10) {
+            request.setAttribute("error", "Comment must be at least 10 characters.");
+            Booking booking = bookingFacade.find(bookingId);
+            request.setAttribute("selectedBooking", booking);
+            request.getRequestDispatcher("/customer/writeComment.jsp").forward(request, response);
+            return;
+        }
 
         // Find BookingUser record for this customer + booking
         BookingUser bu = bookingUserFacade.findByBookingAndRole(bookingId, BookingUserRole.CUSTOMER);

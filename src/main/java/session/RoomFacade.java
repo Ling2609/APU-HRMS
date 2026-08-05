@@ -56,4 +56,24 @@ public class RoomFacade extends AbstractFacade<Room> {
             .setParameter("status", status)
             .getResultList();
     }
+    
+    public List<entity.Room> findAvailableByTypeAndDates(Long roomTypeId,
+            java.time.LocalDateTime checkIn, java.time.LocalDateTime checkOut) {
+        return em.createQuery(
+                "SELECT r FROM Room r WHERE r.roomType.id = :typeId "
+                + "AND r.id NOT IN ("
+                + "  SELECT b.room.id FROM Booking b "
+                + "  WHERE b.bookingStatus IN :statuses "
+                + "  AND b.estimatedCheckInTime < :checkOut "
+                + "  AND b.estimatedCheckOutTime > :checkIn"
+                + ")", entity.Room.class)
+                .setParameter("typeId", roomTypeId)
+                .setParameter("statuses", java.util.Arrays.asList(
+                        entity.Booking.BookingStatus.UNPAID,
+                        entity.Booking.BookingStatus.BOOKED,
+                        entity.Booking.BookingStatus.CHECKED_IN))
+                .setParameter("checkIn", checkIn)
+                .setParameter("checkOut", checkOut)
+                .getResultList();
+    }
 }

@@ -56,6 +56,12 @@ public class RegisterCustomer extends HttpServlet {
             request.getRequestDispatcher("/counter/registerCustomer.jsp").forward(request, response);
             return;
         }
+        
+        if (name.length() < 2) {
+            request.setAttribute("error", "Name must be at least 2 characters.");
+            request.getRequestDispatcher("/counter/registerCustomer.jsp").forward(request, response);
+            return;
+        }
 
         // IC must be 12 digits
         if (!identification.matches("\\d{12}")) {
