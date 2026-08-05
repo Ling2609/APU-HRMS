@@ -43,6 +43,11 @@ public class ViewComments extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/common/login.jsp");
             return;
         }
+        
+        String success = request.getParameter("success");
+        if (success != null) {
+            request.setAttribute("success", success.replace("+", " "));
+        }
 
         List<Message> comments = messageFacade.findCommentsByCustomer(user.getId());
         request.setAttribute("comments", comments);

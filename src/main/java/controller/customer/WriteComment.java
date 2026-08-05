@@ -148,17 +148,8 @@ public class WriteComment extends HttpServlet {
         Message message = new Message(bu, MessageType.COMMENT, comment, rating);
         messageFacade.create(message);
 
-        request.setAttribute("success", "Comment submitted successfully. Thank you for your feedback!");
-        List<Booking> bookings = bookingFacade.findCheckedOutByCustomer(user.getId());
-        java.util.Set<Long> commentedIds = new java.util.HashSet<>();
-        for (Booking b : bookings) {
-            BookingUser bu2 = bookingUserFacade.findByBookingAndRole(b.getId(), BookingUserRole.CUSTOMER);
-            if (bu2 != null && messageFacade.hasCommented(bu2.getId())) {
-                commentedIds.add(b.getId());
-            }
-        }
-        request.setAttribute("bookings", bookings);
-        request.setAttribute("commentedIds", commentedIds);
-        request.getRequestDispatcher("/customer/writeComment.jsp").forward(request, response);
+        response.sendRedirect(request.getContextPath() + 
+            "/customer/ViewComments?success=Comment+submitted+successfully.+Thank+you+for+your+feedback!");
+        return;
     }
 }

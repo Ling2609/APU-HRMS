@@ -13,6 +13,10 @@
         return;
     }
     List<Message> comments = (List<Message>) request.getAttribute("comments");
+        String successMsg = request.getParameter("success");
+        if (successMsg != null) {
+            successMsg = successMsg.replace("+", " ");
+        }
 %>
 <!DOCTYPE html>
 <html>
@@ -32,6 +36,9 @@
     <div class="container">
         <div class="page-title">My Comments</div>
         <br>
+        <% if (successMsg != null) { %>
+            <div class="msg-success"><%= successMsg %></div>
+        <% } %>
         <% if (comments == null || comments.isEmpty()) { %>
             <p>No comments yet.</p>
         <% } else { %>
