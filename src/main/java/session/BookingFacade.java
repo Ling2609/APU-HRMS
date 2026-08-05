@@ -109,4 +109,17 @@ public class BookingFacade extends AbstractFacade<Booking> {
             em.merge(b);
         }
     }
+    
+    public List<Booking> findActiveByCustomer(Long customerId) {
+        return em.createQuery(
+            "SELECT b FROM Booking b WHERE b.customer.id = :id AND b.bookingStatus IN :statuses",
+            Booking.class)
+            .setParameter("id", customerId)
+            .setParameter("statuses", java.util.Arrays.asList(
+                Booking.BookingStatus.UNPAID,
+                Booking.BookingStatus.BOOKED,
+                Booking.BookingStatus.CHECKED_IN,
+                Booking.BookingStatus.LATE))
+            .getResultList();
+    }
 }

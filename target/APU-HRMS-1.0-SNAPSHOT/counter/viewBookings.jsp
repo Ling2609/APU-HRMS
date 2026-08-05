@@ -47,7 +47,7 @@
     </div>
     <div class="container">
         <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 3px solid #b8860b; padding-bottom: 8px; margin-bottom: 20px;">
-            <div class="page-title" style="border:none; margin:0; padding:0;">All Bookings</div>
+            <div class="page-title" id="page-title" style="border:none; margin:0; padding:0;">All Bookings</div>
             <a href="${pageContext.request.contextPath}/counter/BookRoom" class="btn btn-gold">+ New Booking</a>
         </div>
 
@@ -75,13 +75,12 @@
         %>
 
         <div>
-            <button class="tab-btn active" onclick="showTab('all', this)">All (<%= bookings.size() %>)</button>
-            <button class="tab-btn" onclick="showTab('unpaid', this)">Unpaid (<%= unpaidCount %>)</button>
-            <button class="tab-btn" onclick="showTab('booked', this)">Booked (<%= bookedCount %>)</button>
-            <button class="tab-btn" onclick="showTab('late', this)">Late (<%= lateCount %>)</button>
-            <button class="tab-btn" onclick="showTab('checkedin', this)">Checked In (<%= checkedInCount %>)</button>
-            <button class="tab-btn" onclick="showTab('checkedout', this)">Checked Out (<%= checkedOutCount %>)</button>
-        </div>
+            <button class="tab-btn active" onclick="showTab('all', this)">All (<%= bookings.size()%>)</button>
+            <button class="tab-btn" onclick="showTab('unpaid', this)">Unpaid (<%= unpaidCount%>)</button>
+            <button class="tab-btn" onclick="showTab('booked', this)">Check In (<%= bookedCount%>)</button>
+            <button class="tab-btn" onclick="showTab('late', this)">Late (<%= lateCount%>)</button>
+            <button class="tab-btn" onclick="showTab('checkedin', this)">Check Out (<%= checkedInCount%>)</button>
+            <button class="tab-btn" onclick="showTab('checkedout', this)">Completed (<%= checkedOutCount%>)</button>        </div>
 
         <%!
             private String getAction(Booking b, String contextPath) {
@@ -333,6 +332,16 @@
             document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
             document.getElementById('tab-' + tab).classList.add('active');
             btn.classList.add('active');
+
+            const titles = {
+                'all': 'All Bookings',
+                'unpaid': 'Pending Payments',
+                'booked': 'Pending Check-ins',
+                'late': 'Late Check-ins',
+                'checkedin': 'Currently Checked-in Guests',
+                'checkedout': 'Completed Bookings'
+            };
+            document.getElementById('page-title').innerText = titles[tab];
         }
     </script>
 </body>

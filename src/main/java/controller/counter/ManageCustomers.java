@@ -4,11 +4,13 @@
  */
 package controller.counter;
 
+import entity.Booking;
 import entity.User;
 import jakarta.ejb.EJB;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
+import session.BookingFacade;
 import session.UserFacade;
 import java.io.IOException;
 import java.util.List;
@@ -29,8 +31,8 @@ public class ManageCustomers extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    @EJB
-    private UserFacade userFacade;
+    @EJB private UserFacade userFacade;
+    @EJB private BookingFacade bookingFacade;
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -54,6 +56,14 @@ public class ManageCustomers extends HttpServlet {
             Long id = Long.parseLong(request.getParameter("id"));
             User customer = userFacade.find(id);
             if (customer != null && customer.getRole() == User.Role.CUSTOMER) {
+                List<Booking> anyBookings = bookingFacade.findByCustomer(id);
+                if (!anyBookings.isEmpty()) {
+                    request.setAttribute("error", "Cannot delete customer who has booking records.");
+                    List<User> customers = userFacade.findAllCustomers();
+                    request.setAttribute("customers", customers);
+                    request.getRequestDispatcher("/counter/manageCustomers.jsp").forward(request, response);
+                    return;
+                }
                 userFacade.remove(customer);
                 request.setAttribute("success", "Customer deleted successfully.");
             }
@@ -108,19 +118,18 @@ public class ManageCustomers extends HttpServlet {
 
             if (name.length() < 2) {
                 request.setAttribute("error", "Name must be at least 2 characters.");
-                request.getRequestDispatcher("/counter/registerCustomer.jsp").forward(request, response);
-                return;
-            }
-            
-            // IC must be 12 digits
-            if (!identification.matches("\\d{12}")) {
-                request.setAttribute("error", "IC must be exactly 12 digits.");
                 request.setAttribute("customer", customer);
                 request.getRequestDispatcher("/counter/editCustomer.jsp").forward(request, response);
                 return;
             }
 
-            // Phone validation
+            if (!identification.matches("\\d{12}")) {
+                request.setAttribute("error", "IC must be exactly 12 digits (numbers only).");
+                request.setAttribute("customer", customer);
+                request.getRequestDispatcher("/counter/editCustomer.jsp").forward(request, response);
+                return;
+            }
+
             if (!phone.matches("^[0-9]{10,11}$")) {
                 request.setAttribute("error", "Phone must be 10-11 digits.");
                 request.setAttribute("customer", customer);
@@ -128,7 +137,6 @@ public class ManageCustomers extends HttpServlet {
                 return;
             }
 
-            // Email format
             if (!email.isEmpty() && !email.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}$")) {
                 request.setAttribute("error", "Invalid email format.");
                 request.setAttribute("customer", customer);
@@ -136,7 +144,6 @@ public class ManageCustomers extends HttpServlet {
                 return;
             }
 
-            // Check duplicate IC
             User existing = userFacade.findByIdentification(identification);
             if (existing != null && !existing.getId().equals(id)) {
                 request.setAttribute("error", "Another customer already has this IC.");
