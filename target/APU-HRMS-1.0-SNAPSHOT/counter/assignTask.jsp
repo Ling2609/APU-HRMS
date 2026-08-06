@@ -1,6 +1,6 @@
 <%-- 
     Document   : assignTask
-    Created on : Aug 4, 2026, 1:42:28 PM
+    Created on : Aug 4, 2026, 1:42:28 PM
     Author     : Ling
 --%>
 
@@ -32,15 +32,18 @@
         </div>
     </div>
     <div class="container">
-        <% if (request.getAttribute("success") != null) { %>
-            <div class="msg-success"><%= request.getAttribute("success") %></div>
-        <% } %>
-        <% if (request.getAttribute("error") != null) { %>
-            <div class="msg-error"><%= request.getAttribute("error") %></div>
-        <% } %>
 
         <% if (selectedRoom == null) { %>
             <div class="page-title">Assign Cleaning Task</div>
+            
+            <%-- Messages moved below the title for Room List view --%>
+            <% if (request.getAttribute("success") != null) { %>
+                <div class="msg-success"><%= request.getAttribute("success") %></div>
+            <% } %>
+            <% if (request.getAttribute("error") != null) { %>
+                <div class="msg-error"><%= request.getAttribute("error") %></div>
+            <% } %>
+
             <br>
             <h3 style="color:#1a237e; margin-bottom:15px;">Rooms Requiring Cleaning</h3>
             <% if (cleaningRooms == null || cleaningRooms.isEmpty()) { %>
@@ -79,6 +82,14 @@
                 <div class="page-title" style="border:none; margin:0; padding:0;">Assign Cleaning Task</div>
                 <a href="${pageContext.request.contextPath}/counter/AssignTask" class="breadcrumb-link">← Back to room list</a>
             </div>
+
+            <%-- Messages moved below the title for Assignment view --%>
+            <% if (request.getAttribute("success") != null) { %>
+                <div class="msg-success"><%= request.getAttribute("success") %></div>
+            <% } %>
+            <% if (request.getAttribute("error") != null) { %>
+                <div class="msg-error"><%= request.getAttribute("error") %></div>
+            <% } %>
 
             <div class="form-container">
                 <p style="color:#1a237e; font-weight:bold; margin-bottom:20px; padding-bottom:10px; border-bottom:2px solid #f0f0f0;">

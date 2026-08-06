@@ -40,13 +40,15 @@
         <% if (request.getAttribute("success") != null) { %>
             <div class="msg-success"><%= request.getAttribute("success") %></div>
         <% } %>
-        <% if (request.getAttribute("error") != null) { %>
-            <div class="msg-error"><%= request.getAttribute("error") %></div>
-        <% } %>
 
         <% if (selectedCustomer == null) { %>
             <%-- Step 1: Search customer --%>
             <div class="page-title">Book Room</div>
+            
+            <% if (request.getAttribute("error") != null) {%>
+            <div class="msg-error"><%= request.getAttribute("error")%></div>
+            <% }%>
+            
             <br>
             <div class="search-bar">
                 <form method="get" action="${pageContext.request.contextPath}/counter/BookRoom" style="display:flex; gap:10px;">
@@ -91,6 +93,10 @@
                 <div class="page-title" style="border:none; margin:0; padding:0;">Book Room</div>
                 <a href="${pageContext.request.contextPath}/counter/BookRoom" class="breadcrumb-link">← Back to customer list</a>
             </div>
+            
+            <% if (request.getAttribute("error") != null) { %>
+                <div class="msg-error"><%= request.getAttribute("error") %></div>
+            <% } %>
             
             <% if (request.getAttribute("warning") != null) { %>
                 <div class="msg-warning"><%= request.getAttribute("warning") %></div>
@@ -146,5 +152,23 @@
             <% } %>
         <% } %>
     </div>
+    <script>
+        // Set minimum date to today for check-in and check-out
+        window.onload = function() {
+            var today = new Date().toISOString().split('T')[0];
+            var checkIn = document.querySelector('input[name="checkInDate"]');
+            var checkOut = document.querySelector('input[name="checkOutDate"]');
+            
+            if(checkIn && checkOut) {
+                checkIn.setAttribute('min', today);
+                checkOut.setAttribute('min', today);
+                
+                // Auto-update checkout minimum date based on check-in selection
+                checkIn.addEventListener('change', function() {
+                    checkOut.setAttribute('min', this.value);
+                });
+            }
+        };
+    </script>
 </body>
 </html>

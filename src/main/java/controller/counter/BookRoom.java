@@ -67,18 +67,59 @@ public class BookRoom extends HttpServlet {
 
         // Select a customer → show booking form
         if ("select".equals(action)) {
-            Long customerId = Long.parseLong(request.getParameter("customerId"));
-            User selectedCustomer = userFacade.find(customerId);
-            List<RoomType> roomTypes = roomTypeFacade.findAllRoomTypes();
+            try {
+                String customerIdStr = request.getParameter("customerId");
 
-            java.util.Map<Long, Long> availableCounts = new java.util.HashMap<>();
-            for (RoomType rt : roomTypes) {
-                availableCounts.put(rt.getId(), roomTypeFacade.countRoomsByType(rt.getId()));
+                if (customerIdStr == null || customerIdStr.trim().isEmpty()) {
+                    throw new IllegalArgumentException("Please select a customer.");
+                }
+
+                Long customerId = Long.parseLong(customerIdStr.trim());
+                User selectedCustomer = userFacade.find(customerId);
+
+                if (selectedCustomer == null
+                        || selectedCustomer.getRole() != User.Role.CUSTOMER) {
+                    throw new IllegalArgumentException(
+                            "Please select a valid registered customer."
+                    );
+                }
+
+                List<RoomType> roomTypes = roomTypeFacade.findAllRoomTypes();
+
+                java.util.Map<Long, Long> availableCounts
+                        = new java.util.HashMap<>();
+
+                for (RoomType rt : roomTypes) {
+                    availableCounts.put(
+                            rt.getId(),
+                            roomTypeFacade.countRoomsByType(rt.getId())
+                    );
+                }
+
+                request.setAttribute("selectedCustomer", selectedCustomer);
+                request.setAttribute("roomTypes", roomTypes);
+                request.setAttribute("availableCounts", availableCounts);
+
+                request.getRequestDispatcher(
+                        "/counter/bookRoom.jsp"
+                ).forward(request, response);
+
+            } catch (Exception e) {
+                request.setAttribute(
+                        "error",
+                        "Invalid customer selection."
+                );
+
+                request.setAttribute(
+                        "customers",
+                        userFacade.findAllCustomers()
+                );
+
+                request.getRequestDispatcher(
+                        "/counter/bookRoom.jsp"
+                ).forward(request, response);
             }
-            request.setAttribute("selectedCustomer", selectedCustomer);
-            request.setAttribute("roomTypes", roomTypes);
-            request.setAttribute("availableCounts", availableCounts);
-            request.getRequestDispatcher("/counter/bookRoom.jsp").forward(request, response);
+
             return;
         }
 
@@ -109,17 +150,55 @@ public class BookRoom extends HttpServlet {
         String checkInDateStr = request.getParameter("checkInDate");
         String checkOutDateStr = request.getParameter("checkOutDate");
 
-        // Always load these first so JSP can re-display on error
-        Long customerId = Long.parseLong(customerIdStr);
-        User customer = userFacade.find(customerId);
+        // Reload room types and counts when returning after an error
         List<RoomType> roomTypes = roomTypeFacade.findAllRoomTypes();
-        request.setAttribute("selectedCustomer", customer);
         request.setAttribute("roomTypes", roomTypes);
 
+        java.util.Map<Long, Long> availableCounts
+                = new java.util.HashMap<>();
+
+        for (RoomType rt : roomTypes) {
+            availableCounts.put(
+                    rt.getId(),
+                    roomTypeFacade.countRoomsByType(rt.getId())
+            );
+        }
+
+        request.setAttribute("availableCounts", availableCounts);
+
         try {
-            Long roomTypeId = Long.parseLong(roomTypeIdStr);
-            LocalDate checkInDate = LocalDate.parse(checkInDateStr);
-            LocalDate checkOutDate = LocalDate.parse(checkOutDateStr);
+            if (customerIdStr == null || customerIdStr.trim().isEmpty()
+                    || roomTypeIdStr == null || roomTypeIdStr.trim().isEmpty()
+                    || checkInDateStr == null || checkInDateStr.trim().isEmpty()
+                    || checkOutDateStr == null || checkOutDateStr.trim().isEmpty()) {
+
+                throw new IllegalArgumentException(
+                        "All booking fields are required."
+                );
+            }
+
+            Long customerId = Long.parseLong(customerIdStr.trim());
+            Long roomTypeId = Long.parseLong(roomTypeIdStr.trim());
+
+            User customer = userFacade.find(customerId);
+            RoomType roomType = roomTypeFacade.find(roomTypeId);
+
+            if (customer == null
+                    || customer.getRole() != User.Role.CUSTOMER) {
+                throw new IllegalArgumentException(
+                        "Please select a valid registered customer."
+                );
+            }
+
+            if (roomType == null) {
+                throw new IllegalArgumentException(
+                        "Please select a valid room type."
+                );
+            }
+
+            request.setAttribute("selectedCustomer", customer);
+            LocalDate checkInDate = LocalDate.parse(checkInDateStr.trim());
+            LocalDate checkOutDate = LocalDate.parse(checkOutDateStr.trim());
             LocalDate today = LocalDate.now();
             LocalDate maxDate = today.plusDays(5);
 
@@ -175,7 +254,6 @@ public class BookRoom extends HttpServlet {
             }
 
             Room room = available.get(0);
-            RoomType roomType = roomTypeFacade.find(roomTypeId);
 
             double payment = roomType.getRoomTypePrice() * nights;
 
@@ -194,7 +272,7 @@ public class BookRoom extends HttpServlet {
             return;
             
         } catch (Exception e) {
-            request.setAttribute("error", "Booking failed: " + e.getMessage());
+            request.setAttribute("error", "Booking failed. Please check the booking details and try again.");
         }
         request.getRequestDispatcher("/counter/bookRoom.jsp").forward(request, response);
     }

@@ -54,8 +54,12 @@ public class EditProfile extends HttpServlet {
             String address = request.getParameter("address").trim();
 
             // All fields required
-            if (name.isEmpty() || identification.isEmpty() || phone.isEmpty() 
-                    || email.isEmpty() || address.isEmpty()) {
+            if (name.isEmpty()
+                    || gender == null || gender.trim().isEmpty()
+                    || identification.isEmpty()
+                    || phone.isEmpty()
+                    || email.isEmpty()
+                    || address.isEmpty()) {
                 request.setAttribute("error", "All fields are required.");
                 request.getRequestDispatcher("/common/editProfile.jsp").forward(request, response);
                 return;
@@ -63,7 +67,7 @@ public class EditProfile extends HttpServlet {
             
             if (name.length() < 2) {
                 request.setAttribute("error", "Name must be at least 2 characters.");
-                request.getRequestDispatcher("/counter/registerCustomer.jsp").forward(request, response);
+                request.getRequestDispatcher("/common/editProfile.jsp").forward(request, response);
                 return;
             }
 
@@ -71,6 +75,16 @@ public class EditProfile extends HttpServlet {
             if (!identification.matches("\\d{12}")) {
                 request.setAttribute("error", "IC must be exactly 12 digits (numbers only).");
                 request.getRequestDispatcher("/common/editProfile.jsp").forward(request, response);
+                return;
+            }
+            
+            // Check duplicate IC
+            User existingUser = userFacade.findByIdentification(identification);
+
+            if (existingUser != null && !existingUser.getId().equals(user.getId())) {
+                request.setAttribute("error", "This IC is already used by another account.");
+                request.getRequestDispatcher("/common/editProfile.jsp")
+                        .forward(request, response);
                 return;
             }
 
