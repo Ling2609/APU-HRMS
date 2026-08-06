@@ -1,6 +1,6 @@
 <%-- 
     Document   : writeComment
-    Created on : Aug 4, 2026, 2:26:40 PM
+    Created on : Aug 4, 2026, 2:26:40 PM
     Author     : Ling
 --%>
 
@@ -33,15 +33,18 @@
         </div>
     </div>
     <div class="container">
-        <% if (request.getAttribute("success") != null) { %>
-            <div class="msg-success"><%= request.getAttribute("success") %></div>
-        <% } %>
-        <% if (request.getAttribute("error") != null) { %>
-            <div class="msg-error"><%= request.getAttribute("error") %></div>
-        <% } %>
 
         <% if (selectedBooking == null) { %>
             <div class="page-title">Write Comment</div>
+            
+            <%-- Messages moved here for the list view --%>
+            <% if (request.getAttribute("success") != null) { %>
+                <div class="msg-success"><%= request.getAttribute("success") %></div>
+            <% } %>
+            <% if (request.getAttribute("error") != null) { %>
+                <div class="msg-error"><%= request.getAttribute("error") %></div>
+            <% } %>
+            
             <br>
             <h3 style="color:#1a237e; margin-bottom:15px;">Select a Completed Booking to Comment</h3>
             <% if (bookings == null || bookings.isEmpty()) { %>
@@ -86,6 +89,14 @@
                 <div class="page-title" style="border:none; margin:0; padding:0;">Write Comment</div>
                 <a href="${pageContext.request.contextPath}/customer/WriteComment" class="breadcrumb-link">← Back to booking list</a>
             </div>
+
+            <%-- Messages moved here for the form view --%>
+            <% if (request.getAttribute("success") != null) { %>
+                <div class="msg-success"><%= request.getAttribute("success") %></div>
+            <% } %>
+            <% if (request.getAttribute("error") != null) { %>
+                <div class="msg-error"><%= request.getAttribute("error") %></div>
+            <% } %>
 
             <div class="form-container">
                 <p style="color:#1a237e; font-weight:bold; margin-bottom:20px; padding-bottom:10px; border-bottom:2px solid #f0f0f0;">

@@ -47,4 +47,12 @@ public class MessageFacade extends AbstractFacade<Message> {
             .getResultList();
     }
     
+    public List<Long> findCommentedBookingIdsByCustomer(Long userId) {
+        return em.createQuery(
+            "SELECT m.bookingUser.booking.id FROM Message m WHERE m.bookingUser.user.id = :userId AND m.messageType = :type",
+            Long.class)
+            .setParameter("userId", userId)
+            .setParameter("type", entity.Message.MessageType.COMMENT)
+            .getResultList();
+    }
 }

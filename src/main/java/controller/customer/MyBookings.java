@@ -11,8 +11,11 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 import session.BookingFacade;
+import session.MessageFacade;
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
 
 /**
  *
@@ -32,7 +35,10 @@ public class MyBookings extends HttpServlet {
      */
     @EJB
     private BookingFacade bookingFacade;
-
+    
+    @EJB
+    private MessageFacade messageFacade;
+    
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -45,7 +51,11 @@ public class MyBookings extends HttpServlet {
         }
 
         List<Booking> bookings = bookingFacade.findByCustomer(user.getId());
+        
+        Set<Long> commentedBookingIds = new HashSet<>(messageFacade.findCommentedBookingIdsByCustomer(user.getId()));
+        
         request.setAttribute("bookings", bookings);
+        request.setAttribute("commentedBookingIds", commentedBookingIds);
         request.getRequestDispatcher("/customer/myBookings.jsp").forward(request, response);
     }
 }

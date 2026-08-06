@@ -5,7 +5,7 @@
 --%>
 
 <%@ page contentType="text/html;charset=UTF-8" %>
-<%@ page import="entity.User, entity.Booking, java.util.List" %>
+<%@ page import="entity.User, entity.Booking, java.util.List, java.util.Set" %>
 <%
     User user = (User) session.getAttribute("user");
     if (user == null || user.getRole() != User.Role.CUSTOMER) {
@@ -13,6 +13,8 @@
         return;
     }
     List<Booking> bookings = (List<Booking>) request.getAttribute("bookings");
+    Set<Long> commentedBookingIds = (Set<Long>) request.getAttribute("commentedBookingIds");
+    if (commentedBookingIds == null) commentedBookingIds = new java.util.HashSet<>();
 %>
 <!DOCTYPE html>
 <html>
@@ -77,7 +79,13 @@
                             <td><%= b.getBookingStatus() %></td>
                             <td>
                                 <% if (b.getBookingStatus() == entity.Booking.BookingStatus.CHECKED_OUT) { %>
-                                    <a href="${pageContext.request.contextPath}/customer/WriteComment" class="action-link">Write Comment</a>
+                                    
+                                    <% if (commentedBookingIds.contains(b.getId())) { %>
+                                        <a href="${pageContext.request.contextPath}/customer/ViewComments?bookingId=<%= b.getId() %>" class="action-link">View Written Comment</a>
+                                    <% } else { %>
+                                        <a href="${pageContext.request.contextPath}/customer/WriteComment?bookingId=<%= b.getId() %>" class="action-link">Write Comment</a>
+                                    <% } %>
+                                    
                                 <% } else { %>
                                     -
                                 <% } %>
