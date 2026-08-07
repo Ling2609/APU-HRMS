@@ -60,7 +60,7 @@ public class ViewReport extends HttpServlet {
             case COMMENT_FEEDBACK:
                 CommentFeedbackReport commentFeedbackReport = new CommentFeedbackReport(report);
                 commentFeedbackReport.setBookingsLogs(managerFacade.getReportBookings(report));
-                commentFeedbackReport.setMessages(managerFacade.getAllMessages(report));
+                commentFeedbackReport.setMessages(managerFacade.getAllMessages());
                 request.setAttribute("viewingReport", commentFeedbackReport);
                 break;
             case ROOM_STATUS:
