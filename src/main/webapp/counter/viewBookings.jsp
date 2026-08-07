@@ -103,7 +103,7 @@
 
                         case CHECKED_OUT:
                             return "<a href='" + contextPath + "/counter/AssignTask?id=" + b.getId()
-                                    + "' class='action-link'>Assign Task</a>";
+                                    + "' class='action-link'>Assign Cleaning Task</a>";
 
                         default:
                             return "-";
