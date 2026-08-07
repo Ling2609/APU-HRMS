@@ -98,16 +98,21 @@ public class BookingFacade extends AbstractFacade<Booking> {
     
     public void updateLateBookings() {
         List<Booking> booked = em.createQuery(
-                "SELECT b FROM Booking b WHERE b.bookingStatus = :status "
-                + "AND b.estimatedCheckInTime < :now",
+                "SELECT b FROM Booking b WHERE b.bookingStatus = :status",
                 Booking.class)
                 .setParameter("status", Booking.BookingStatus.BOOKED)
-                .setParameter("now", java.time.LocalDateTime.now())
                 .getResultList();
 
+        java.time.LocalDate today = java.time.LocalDate.now();
+
         for (Booking b : booked) {
-            b.setBookingStatus(Booking.BookingStatus.LATE);
-            em.merge(b);
+            if (b.getEstimatedCheckInTime()
+                    .toLocalDate()
+                    .isBefore(today)) {
+
+                b.setBookingStatus(Booking.BookingStatus.LATE);
+                em.merge(b);
+            }
         }
     }
     
