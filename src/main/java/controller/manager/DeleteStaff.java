@@ -31,10 +31,17 @@ public class DeleteStaff extends HttpServlet {
             return;
         }
         
-        Staff staff = (Staff)managerFacade.getStaffByID(staffID);
-        User user = new User(staff);
-        
-        managerFacade.remove(user);
+        try {
+            Staff staff = (Staff)managerFacade.getStaffByID(staffID);
+            User user = new User(staff);
+
+            managerFacade.remove(user);
+        }
+        catch(Exception e) {
+            request.setAttribute("error", "Cannot delete this staff.");
+            request.getRequestDispatcher("/manager/ManageStaff").forward(request, response);
+            return;
+        }
         
         request.setAttribute("success", "Staff deleted successfully.");
         request.getRequestDispatcher("/manager/ManageStaff").forward(request, response);
