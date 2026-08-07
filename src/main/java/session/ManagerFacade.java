@@ -155,7 +155,7 @@ public class ManagerFacade extends StaffFacade {
         
     }
     
-    public ArrayList<Message> getAllMessages(Report report) {
+    public ArrayList<Message> getAllMessages() {
         
         List<Message> queryList = em.createQuery(
             "SELECT m FROM Message m ORDER BY m.id", Message.class)

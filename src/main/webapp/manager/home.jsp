@@ -48,6 +48,11 @@
                     <h3>Set Price</h3>
                     <p>Set prices for different room types.</p>
                 </a>
+                <a href="${pageContext.request.contextPath}/manager/ViewMessages" class="card">
+                    <div class="card-icon">💬</div>
+                    <h3>View Messages</h3>
+                    <p>View both feedback from housekeepers and comments from customers.</p>
+                </a>
             </div>
         </div>
                     
