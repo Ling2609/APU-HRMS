@@ -195,7 +195,7 @@
                                 <td><%= b.getEstimatedCheckOutTime().toLocalDate() %></td>
                                 <td>RM<%= String.format("%.2f", b.getPayment()) %></td>
                                 <td>
-                                    <a href="${pageContext.request.contextPath}/counter/Receipt" class="action-link">Collect Payment</a>
+                                    <a href="${pageContext.request.contextPath}/counter/Receipt?id=<%= b.getId() %>" class="action-link">Collect Payment</a>
                                     &nbsp;|&nbsp;
                                     <a href="${pageContext.request.contextPath}/counter/CancelBooking?id=<%= b.getId() %>"
                                        class="action-link-danger"
@@ -231,7 +231,7 @@
                                 <td><%= b.getEstimatedCheckInTime().toLocalDate() %></td>
                                 <td><%= b.getEstimatedCheckOutTime().toLocalDate() %></td>
                                 <td>RM<%= String.format("%.2f", b.getPayment()) %></td>
-                                <td><a href="${pageContext.request.contextPath}/counter/CheckIn" class="action-link">Check In</a></td>
+                                <td><a href="${pageContext.request.contextPath}/counter/CheckIn?id=<%= b.getId() %>" class="action-link">Check In</a></td>
                             </tr>
                             <% } %>
                         </tbody>
@@ -262,7 +262,7 @@
                                 <td><%= b.getEstimatedCheckInTime().toLocalDate() %></td>
                                 <td><%= b.getEstimatedCheckOutTime().toLocalDate() %></td>
                                 <td>RM<%= String.format("%.2f", b.getPayment()) %></td>
-                                <td><a href="${pageContext.request.contextPath}/counter/CheckIn" class="action-link">Check In</a></td>
+                                <td><a href="${pageContext.request.contextPath}/counter/CheckIn?id=<%= b.getId() %>" class="action-link">Check In</a></td>
                             </tr>
                             <% } %>
                         </tbody>
@@ -293,7 +293,7 @@
                                 <td><%= b.getCheckInTime() != null ? b.getCheckInTime().toLocalDate() : "-" %></td>
                                 <td><%= b.getEstimatedCheckOutTime().toLocalDate() %></td>
                                 <td>RM<%= String.format("%.2f", b.getPayment()) %></td>
-                                <td><a href="${pageContext.request.contextPath}/counter/CheckOut" class="action-link">Check Out</a></td>
+                                <td><a href="${pageContext.request.contextPath}/counter/CheckOut?id=<%= b.getId() %>" class="action-link">Check Out</a></td>
                             </tr>
                             <% } %>
                         </tbody>
@@ -324,7 +324,7 @@
                                 <td><%= b.getCheckInTime() != null ? b.getCheckInTime().toLocalDate() : "-" %></td>
                                 <td><%= b.getCheckOutTime() != null ? b.getCheckOutTime().toLocalDate() : "-" %></td>
                                 <td>RM<%= String.format("%.2f", b.getPayment()) %></td>
-                                <td><a href="${pageContext.request.contextPath}/counter/AssignTask" class="action-link">Assign Task</a></td>
+                                <td><a href="${pageContext.request.contextPath}/counter/AssignTask?id=<%= b.getId() %>" class="action-link">Assign Task</a></td>
                             </tr>
                             <% } %>
                         </tbody>
