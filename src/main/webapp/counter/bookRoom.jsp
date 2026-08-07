@@ -43,7 +43,16 @@
 
         <% if (selectedCustomer == null) { %>
             <%-- Step 1: Search customer --%>
-            <div class="page-title">Book Room</div>
+            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:3px solid #b8860b; padding-bottom:8px; margin-bottom:20px;">
+                <div class="page-title" style="border:none; margin:0; padding:0;">
+                    Book Room
+                </div>
+
+                <a href="<%= request.getContextPath() %>/counter/ViewBookings"
+                   class="breadcrumb-link">
+                    ← Back to Booking List
+                </a>
+            </div>
             
             <% if (request.getAttribute("error") != null) {%>
             <div class="msg-error"><%= request.getAttribute("error")%></div>
