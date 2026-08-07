@@ -56,6 +56,18 @@ public class UserFacade extends AbstractFacade<User> {
         }
     }
     
+    public User findByEmail(String email) {
+        try {
+            return em.createQuery(
+                    "SELECT u FROM User u WHERE LOWER(u.email) = LOWER(:email)",
+                    User.class)
+                    .setParameter("email", email.trim())
+                    .getSingleResult();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+    
     public List<User> findAllCustomers() {
         return em.createQuery(
             "SELECT u FROM User u WHERE u.role = :role ORDER BY u.id DESC", User.class)

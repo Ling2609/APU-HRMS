@@ -8,6 +8,7 @@ entity\Staff.class
 entity\CommentFeedbackReport.class
 controller\manager\ManageRoomPrice.class
 entity\Booking$BookingStatus.class
+controller\common\ResetPassword.class
 session\MessageFacade.class
 session\SalaryLogFacade.class
 session\HousekeeperFacade.class
@@ -29,6 +30,7 @@ controller\counter\ManageCustomers.class
 session\StaffFacade.class
 entity\Manager.class
 controller\housekeeper\CompleteTask.class
+controller\common\ForgotPassword.class
 controller\manager\ManageReport.class
 controller\manager\ViewReport$1.class
 controller\common\StartupData.class
@@ -37,6 +39,7 @@ entity\Report$ReportType.class
 session\RoomTypeFacade.class
 controller\manager\RegisterStaff.class
 entity\Room.class
+util\EmailUtil$1.class
 controller\customer\ViewComments.class
 com\apuhrms\apu\hrms\resources\JakartaEE10Resource.class
 controller\manager\EditStaff.class
@@ -55,10 +58,12 @@ session\AbstractFacade.class
 entity\RoomType.class
 controller\counter\Receipt.class
 controller\manager\DeleteReport.class
+util\EmailUtil.class
 controller\housekeeper\WriteFeedback.class
 controller\manager\CreateReport$1.class
 session\BookingUserFacade.class
 entity\Message.class
+controller\common\VerifyResetCode.class
 controller\counter\ViewBookings.class
 entity\BookingUser$BookingUserRole.class
 entity\BookingLog.class
