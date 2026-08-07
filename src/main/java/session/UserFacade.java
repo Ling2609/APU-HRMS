@@ -29,6 +29,10 @@ public class UserFacade extends AbstractFacade<User> {
         super(User.class);
     }
     
+    public UserFacade(Class<User> entityClass) {
+        super(entityClass);
+    }
+    
     public User findByNameAndPassword(String name, String password) {
         try {
             return em.createQuery(
@@ -47,6 +51,18 @@ public class UserFacade extends AbstractFacade<User> {
                 "SELECT u FROM User u WHERE u.identification = :ic", User.class)
                 .setParameter("ic", identification)
                 .getSingleResult();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+    
+    public User findByEmail(String email) {
+        try {
+            return em.createQuery(
+                    "SELECT u FROM User u WHERE LOWER(u.email) = LOWER(:email)",
+                    User.class)
+                    .setParameter("email", email.trim())
+                    .getSingleResult();
         } catch (Exception e) {
             return null;
         }

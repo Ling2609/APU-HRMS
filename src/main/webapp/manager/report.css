@@ -1,0 +1,79 @@
+.reportContainer {
+    background: #ffffff;
+    border: 2px solid #1a237e;
+    border-radius: 8px;
+    padding: 30px;
+    max-width: 1000px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.reportHeaderContainer {
+    width: 100%;
+    height: max-content;
+}
+
+.reportHeaderContainer h3 {
+    color: #1a237e;
+    text-align: center;
+    border-bottom: 2px solid #b8860b;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+.reportHeaderContainer div.headerLine {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+    font-size: 14px;
+}
+
+.reportBodyContainer {
+    width: 100%;
+    height: max-content;
+}
+
+.reportBodyContainer h3 {
+    color: #1a237e;
+    text-align: center;
+    border-bottom: 2px solid #b8860b;
+    padding: 15px 0;
+}
+
+.reportBodyContainer div.bodySection {
+    width: 100%;
+    height: max-content;
+}
+
+.reportBodyContainer div.bodySection table {
+    width: 100%;
+    height: max-content;
+}
+
+.reportBodyContainer div.bodySection table th {
+    font-size: 12px;
+    font-weight: bold;
+    padding: 10px 0;
+    text-align: center;
+}
+
+.reportBodyContainer div.bodySection table tr td{
+    font-size: 12px;
+    margin-top: 10px;
+    text-align: left;
+    padding: 6px 0;
+}
+
+.reportBodyContainer div.bodySection table tr td.double {
+    text-align: right;
+}
+
+.reportBodyContainer div.bodySection table tr td.time,
+.reportBodyContainer div.bodySection table tr td.number,
+.reportBodyContainer div.bodySection table tr td.status {
+    text-align: center;
+}
+
+.reportBodyContainer div.bodySection .sum {
+    text-align: right;
+    font-weight: bold;
+}

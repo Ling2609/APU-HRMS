@@ -471,6 +471,10 @@ body {
 }
 
 /* ===== CUSTOMER BOOKING HISTORY TABLE ===== */
+.customer-bookings-container {
+    max-width: 1500px;
+}
+
 .customer-bookings-wrapper {
     width: 100%;
     overflow-x: hidden;
@@ -479,7 +483,7 @@ body {
 
 .customer-bookings-table {
     width: 100%;
-    table-layout: fixed;
+    table-layout: auto;
 }
 
 .customer-bookings-table th,
@@ -501,17 +505,17 @@ body {
 .customer-bookings-table td:nth-child(3),
 .customer-bookings-table td:nth-child(9),
 .customer-bookings-table td:nth-child(10) {
-    white-space: normal;
-    overflow-wrap: anywhere;
+    white-space: nowrap;
+    overflow-wrap: normal;
 }
 
-.customer-bookings-table .booking-id-col { width: 8%; }
-.customer-bookings-table .room-col { width: 7%; }
+.customer-bookings-table .booking-id-col { width: 7%; }
+.customer-bookings-table .room-col { width: 6%; }
 .customer-bookings-table .room-type-col { width: 14%; }
-.customer-bookings-table .date-col { width: 11%; }
-.customer-bookings-table .payment-col { width: 10%; }
-.customer-bookings-table .status-col { width: 10%; }
-.customer-bookings-table .action-col { width: 12%; }
+.customer-bookings-table .date-col { width: 10%; }
+.customer-bookings-table .payment-col { width: 9%; }
+.customer-bookings-table .status-col { width: 11%; }
+.customer-bookings-table .action-col { width: 18%; }
 
 /* ===== BOOKING TAB - FIXED HEADER + SCROLLABLE BODY ===== */
 .tab-table-container {

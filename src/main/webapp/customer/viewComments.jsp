@@ -34,7 +34,16 @@
         </div>
     </div>
     <div class="container">
-        <div class="page-title">My Comments</div>
+        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:3px solid #b8860b; padding-bottom:8px; margin-bottom:20px;">
+            <div class="page-title" style="border:none; margin:0; padding:0;">
+                My Comments
+            </div>
+
+            <a href="${pageContext.request.contextPath}/customer/MyBookings"
+               class="breadcrumb-link">
+                ← Back to Booking History
+            </a>
+        </div>
         <br>
         <% if (successMsg != null) { %>
             <div class="msg-success"><%= successMsg %></div>

@@ -30,7 +30,26 @@
         </div>
     </div>
     <div class="container">
-        <div class="page-title">Check Out</div>
+        <div style="
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            border-bottom:3px solid #b8860b;
+            padding-bottom:8px;
+            margin-bottom:25px;
+            width:100%;
+       ">
+           <div class="page-title"
+                style="border-bottom:none; margin:0; padding:0;">
+               Check Out
+           </div>
+
+           <a href="<%= request.getContextPath() %>/counter/ViewBookings"
+              class="action-link"
+              style="text-decoration:none;">
+               ← Back to Booking List
+           </a>
+       </div>
         <br>
         <% if (request.getAttribute("success") != null) { %>
             <div class="msg-success"><%= request.getAttribute("success") %></div>
