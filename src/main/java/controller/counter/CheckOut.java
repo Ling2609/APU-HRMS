@@ -41,41 +41,93 @@ public class CheckOut extends HttpServlet {
 
         HttpSession session = request.getSession();
         User staff = (User) session.getAttribute("user");
+
         if (staff == null || staff.getRole() != User.Role.COUNTER_STAFF) {
             response.sendRedirect(request.getContextPath() + "/common/login.jsp");
             return;
         }
 
         String action = request.getParameter("action");
+        String idParameter = request.getParameter("id");
 
+        // Perform actual check-out.
         if ("checkout".equals(action)) {
-            Long id = Long.parseLong(request.getParameter("id"));
-            Booking booking = bookingFacade.find(id);
+            try {
+                Long bookingId = Long.valueOf(idParameter);
+                Booking booking = bookingFacade.find(bookingId);
 
-            if (booking == null) {
-                request.setAttribute("error", "Booking not found.");
-            } else if (booking.getBookingStatus() != BookingStatus.CHECKED_IN) {
-                request.setAttribute("error", "This booking is not currently checked in.");
-            } else {
-                booking.setCheckOutTime(LocalDateTime.now());
-                booking.setBookingStatus(BookingStatus.CHECKED_OUT);
-                bookingFacade.edit(booking);
+                if (booking == null) {
+                    request.setAttribute("error", "Booking not found.");
 
-                Room room = booking.getRoom();
-                room.setRoomStatus(RoomStatus.CLEANING);
-                roomFacade.edit(room);
+                } else if (booking.getBookingStatus() != BookingStatus.CHECKED_IN) {
+                    request.setAttribute("error", "This booking is not currently checked in.");
 
-                response.sendRedirect(request.getContextPath() + 
-                    "/counter/AssignTask?success=Check-out+successful+for+" + 
-                    booking.getCustomer().getName() + 
-                    ".+Room+" + room.getRoomNumber() + 
-                    "+is+now+marked+for+cleaning.");
-                return;
+                } else if (booking.getCheckInTime() == null) {
+                    request.setAttribute("error", "This booking has no recorded check-in time.");
+
+                } else {
+                    booking.setCheckOutTime(LocalDateTime.now());
+                    booking.setBookingStatus(BookingStatus.CHECKED_OUT);
+                    bookingFacade.edit(booking);
+
+                    Room room = booking.getRoom();
+                    room.setRoomStatus(RoomStatus.CLEANING);
+                    roomFacade.edit(room);
+
+                    request.setAttribute(
+                            "success",
+                            "Check-out successful for "
+                            + booking.getCustomer().getName()
+                            + " - Room "
+                            + room.getRoomNumber()
+                    );
+
+                    request.setAttribute("checkedOutBooking", booking);
+                }
+
+            } catch (NumberFormatException e) {
+                request.setAttribute("error", "Invalid booking ID.");
             }
+
+            List<Booking> remainingBookings = bookingFacade.findByStatus(BookingStatus.CHECKED_IN);
+            request.setAttribute("bookings", remainingBookings);
+
+            request.getRequestDispatcher("/counter/checkOut.jsp").forward(request, response);
+            return;
         }
 
-        List<Booking> bookings = bookingFacade.findByStatus(BookingStatus.CHECKED_IN);
-        request.setAttribute("bookings", bookings);
+        // Show only the selected checked-in booking when an ID is provided.
+        if (idParameter != null && !idParameter.isBlank()) {
+            try {
+                Long bookingId = Long.valueOf(idParameter);
+                Booking selectedBooking = bookingFacade.find(bookingId);
+
+                if (selectedBooking == null) {
+                    request.setAttribute("error", "Booking not found.");
+                    request.setAttribute("bookings", List.of());
+
+                } else if (selectedBooking.getBookingStatus() != BookingStatus.CHECKED_IN) {
+                    request.setAttribute("error", "This booking is not currently checked in.");
+                    request.setAttribute("bookings", List.of());
+
+                } else if (selectedBooking.getCheckInTime() == null) {
+                    request.setAttribute("error", "This booking has no recorded check-in time.");
+                    request.setAttribute("bookings", List.of());
+
+                } else {
+                    request.setAttribute("bookings", List.of(selectedBooking));
+                }
+
+            } catch (NumberFormatException e) {
+                request.setAttribute("error", "Invalid booking ID.");
+                request.setAttribute("bookings", List.of());
+            }
+
+        } else {
+            List<Booking> bookings = bookingFacade.findByStatus(BookingStatus.CHECKED_IN);
+            request.setAttribute("bookings", bookings);
+        }
+
         request.getRequestDispatcher("/counter/checkOut.jsp").forward(request, response);
     }
 }
