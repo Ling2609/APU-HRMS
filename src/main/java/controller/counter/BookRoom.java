@@ -65,6 +65,64 @@ public class BookRoom extends HttpServlet {
 
         String action = request.getParameter("action");
 
+        // Return date-based room availability
+        if ("availability".equals(action)) {
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+
+            try {
+                String checkInDateStr = request.getParameter("checkInDate");
+                String checkOutDateStr = request.getParameter("checkOutDate");
+
+                LocalDate checkInDate = LocalDate.parse(checkInDateStr);
+                LocalDate checkOutDate = LocalDate.parse(checkOutDateStr);
+
+                if (!checkOutDate.isAfter(checkInDate)) {
+                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                    response.getWriter().write("{}");
+                    return;
+                }
+
+                LocalDateTime checkIn = checkInDate.atStartOfDay();
+                LocalDateTime checkOut = checkOutDate.atStartOfDay();
+
+                List<RoomType> roomTypes = roomTypeFacade.findAllRoomTypes();
+
+                StringBuilder json = new StringBuilder("{");
+
+                for (int i = 0; i < roomTypes.size(); i++) {
+                    RoomType rt = roomTypes.get(i);
+
+                    int count = roomFacade
+                            .findAvailableByTypeAndDates(
+                                    rt.getId(),
+                                    checkIn,
+                                    checkOut
+                            )
+                            .size();
+
+                    json.append("\"")
+                            .append(rt.getId())
+                            .append("\":")
+                            .append(count);
+
+                    if (i < roomTypes.size() - 1) {
+                        json.append(",");
+                    }
+                }
+
+                json.append("}");
+
+                response.getWriter().write(json.toString());
+
+            } catch (Exception e) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.getWriter().write("{}");
+            }
+
+            return;
+        }
+
         // Select a customer → show booking form
         if ("select".equals(action)) {
             try {
@@ -86,20 +144,9 @@ public class BookRoom extends HttpServlet {
 
                 List<RoomType> roomTypes = roomTypeFacade.findAllRoomTypes();
 
-                java.util.Map<Long, Long> availableCounts
-                        = new java.util.HashMap<>();
-
-                for (RoomType rt : roomTypes) {
-                    availableCounts.put(
-                            rt.getId(),
-                            roomTypeFacade.countRoomsByType(rt.getId())
-                    );
-                }
-
                 request.setAttribute("selectedCustomer", selectedCustomer);
                 request.setAttribute("roomTypes", roomTypes);
-                request.setAttribute("availableCounts", availableCounts);
-
+                
                 request.getRequestDispatcher(
                         "/counter/bookRoom.jsp"
                 ).forward(request, response);
@@ -150,21 +197,9 @@ public class BookRoom extends HttpServlet {
         String checkInDateStr = request.getParameter("checkInDate");
         String checkOutDateStr = request.getParameter("checkOutDate");
 
-        // Reload room types and counts when returning after an error
+        // Reload room types when returning after an error
         List<RoomType> roomTypes = roomTypeFacade.findAllRoomTypes();
         request.setAttribute("roomTypes", roomTypes);
-
-        java.util.Map<Long, Long> availableCounts
-                = new java.util.HashMap<>();
-
-        for (RoomType rt : roomTypes) {
-            availableCounts.put(
-                    rt.getId(),
-                    roomTypeFacade.countRoomsByType(rt.getId())
-            );
-        }
-
-        request.setAttribute("availableCounts", availableCounts);
 
         try {
             if (customerIdStr == null || customerIdStr.trim().isEmpty()

@@ -5,7 +5,7 @@
 --%>
 
 <%@ page contentType="text/html;charset=UTF-8" %>
-<%@ page import="entity.User, entity.RoomType, java.util.List, java.util.Map" %>
+<%@ page import="entity.User, entity.RoomType, java.util.List" %>
 <%
     User user = (User) session.getAttribute("user");
     if (user == null || user.getRole() != User.Role.COUNTER_STAFF) {
@@ -15,9 +15,6 @@
     List<User> customers = (List<User>) request.getAttribute("customers");
     List<RoomType> roomTypes = (List<RoomType>) request.getAttribute("roomTypes");
     User selectedCustomer = (User) request.getAttribute("selectedCustomer");
-    Map<Long, Long> availableCounts = (Map<Long, Long>) request.getAttribute("availableCounts");
-        if (availableCounts == null)
-            availableCounts = new java.util.HashMap<>();
     String keyword = request.getParameter("keyword");
     if (keyword == null) keyword = "";
 %>
@@ -130,27 +127,33 @@
                         <input type="hidden" name="customerId" value="<%= selectedCustomer.getId() %>" />
                         <table class="form-table">
                             <tr>
-                                <td>Room Type:</td>
-                                <td>
-                                    <select name="roomTypeId" required>
-                                        <option value="">-- Select Room Type --</option>
-                                        <% if (roomTypes != null) { for (RoomType rt : roomTypes) { 
-                                            long count = availableCounts.getOrDefault(rt.getId(), 0L); %>
-                                            <option value="<%= rt.getId() %>" <%= count == 0 ? "disabled" : "" %>>
-                                                <%= rt.getRoomTypeName() %> - RM<%= String.format("%.2f", rt.getRoomTypePrice()) %>/night
-                                                (<%= count %> rooms total)
-                                            </option>
-                                        <% } } %>
-                                    </select>
-                                </td>
-                            </tr>
-                            <tr>
                                 <td>Estimated Check-in Date:</td>
                                 <td><input type="date" name="checkInDate" required /></td>
                             </tr>
                             <tr>
                                 <td>Estimated Check-out Date:</td>
                                 <td><input type="date" name="checkOutDate" required /></td>
+                            </tr>
+                            <tr>
+                                <td>Room Type:</td>
+                                <td>
+                                    <select name="roomTypeId" required>
+                                        <option value="">-- Select Room Type --</option>
+
+                                        <% if (roomTypes != null) {
+                                            for (RoomType rt : roomTypes) { %>
+
+                                            <option value="<%= rt.getId() %>"
+                                                    data-name="<%= rt.getRoomTypeName() %>"
+                                                    data-price="<%= String.format("%.2f", rt.getRoomTypePrice()) %>">
+                                                <%= rt.getRoomTypeName() %> -
+                                                RM<%= String.format("%.2f", rt.getRoomTypePrice()) %>/night
+                                            </option>
+
+                                        <% }
+                                        } %>
+                                    </select>
+                                </td>
                             </tr>
                         </table>
                         <div style="text-align:center; margin-top:20px;">
@@ -162,20 +165,102 @@
         <% } %>
     </div>
     <script>
-        // Set minimum date to today for check-in and check-out
-        window.onload = function() {
+        window.onload = function () {
+
             var today = new Date().toISOString().split('T')[0];
+
             var checkIn = document.querySelector('input[name="checkInDate"]');
             var checkOut = document.querySelector('input[name="checkOutDate"]');
-            
-            if(checkIn && checkOut) {
+            var roomTypeSelect = document.querySelector('select[name="roomTypeId"]');
+
+            if (checkIn && checkOut && roomTypeSelect) {
+
                 checkIn.setAttribute('min', today);
                 checkOut.setAttribute('min', today);
-                
-                // Auto-update checkout minimum date based on check-in selection
-                checkIn.addEventListener('change', function() {
-                    checkOut.setAttribute('min', this.value);
+
+                function updateAvailability() {
+
+                    if (!checkIn.value || !checkOut.value) {
+                        return;
+                    }
+
+                    fetch(
+                        '<%= request.getContextPath() %>/counter/BookRoom'
+                        + '?action=availability'
+                        + '&checkInDate=' + encodeURIComponent(checkIn.value)
+                        + '&checkOutDate=' + encodeURIComponent(checkOut.value)
+                    )
+                    .then(function (response) {
+                        if (!response.ok) {
+                            throw new Error('Unable to load availability.');
+                        }
+
+                        return response.json();
+                    })
+                    .then(function (availability) {
+
+                        var options = roomTypeSelect.options;
+
+                        for (var i = 1; i < options.length; i++) {
+
+                            var option = options[i];
+                            var roomTypeId = option.value;
+
+                            var name = option.getAttribute('data-name');
+                            var price = option.getAttribute('data-price');
+
+                            var count = availability[roomTypeId];
+
+                            if (count === undefined) {
+                                count = 0;
+                            }
+
+                            option.text =
+                                name
+                                + ' - RM'
+                                + price
+                                + '/night ('
+                                + count
+                                + ' available)';
+
+                            option.disabled = count === 0;
+                        }
+
+                        if (
+                            roomTypeSelect.selectedIndex > 0
+                            && roomTypeSelect.options[
+                                roomTypeSelect.selectedIndex
+                            ].disabled
+                        ) {
+                            roomTypeSelect.value = '';
+                        }
+                    })
+                    .catch(function (error) {
+                        console.error(error);
+                    });
+                }
+
+                checkIn.addEventListener('change', function () {
+
+                    var selectedDate = new Date(this.value);
+                    selectedDate.setDate(selectedDate.getDate() + 1);
+
+                    var nextDay =
+                        selectedDate.toISOString().split('T')[0];
+
+                    checkOut.setAttribute('min', nextDay);
+
+                    if (checkOut.value && checkOut.value < nextDay) {
+                        checkOut.value = '';
+                    }
+
+                    updateAvailability();
                 });
+
+                checkOut.addEventListener(
+                    'change',
+                    updateAvailability
+                );
             }
         };
     </script>
