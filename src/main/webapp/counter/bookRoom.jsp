@@ -129,7 +129,7 @@
                                             long count = availableCounts.getOrDefault(rt.getId(), 0L); %>
                                             <option value="<%= rt.getId() %>" <%= count == 0 ? "disabled" : "" %>>
                                                 <%= rt.getRoomTypeName() %> - RM<%= String.format("%.2f", rt.getRoomTypePrice()) %>/night
-                                                (<%= count %> available)
+                                                (<%= count %> rooms total)
                                             </option>
                                         <% } } %>
                                     </select>
