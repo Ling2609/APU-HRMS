@@ -119,7 +119,19 @@
                 </div>
                 <%-- Print button outside receipt box --%>
                 <div style="text-align:center; margin-top:20px;" class="no-print">
-                    <button onclick="window.print()" class="btn btn-gold">🖨️ Print Receipt</button>
+                    <p style="color:#388e3c; font-weight:bold; margin-bottom:15px;">
+                        Payment collected successfully. This booking is now ready for check-in.
+                    </p>
+
+                    <button onclick="window.print()" class="btn btn-gold">
+                        🖨️ Print Receipt
+                    </button>
+
+                    <a href="<%= request.getContextPath()%>/counter/CheckIn?id=<%= paidBooking.getId()%>"
+                       class="btn btn-primary"
+                       style="margin-left:10px; text-decoration:none;">
+                        Proceed to Check In
+                    </a>
                 </div>
 
         <% } else { %>

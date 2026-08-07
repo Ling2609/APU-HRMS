@@ -34,37 +34,67 @@ public class Receipt extends HttpServlet {
     @EJB private BookingFacade bookingFacade;
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request,HttpServletResponse response) throws ServletException, IOException {
 
         HttpSession session = request.getSession();
         User staff = (User) session.getAttribute("user");
+
         if (staff == null || staff.getRole() != User.Role.COUNTER_STAFF) {
             response.sendRedirect(request.getContextPath() + "/common/login.jsp");
             return;
         }
 
         String action = request.getParameter("action");
+        String idParameter = request.getParameter("id");
 
+        //Process the payment only when action=pay.
         if ("pay".equals(action)) {
-            Long id = Long.parseLong(request.getParameter("id"));
-            Booking booking = bookingFacade.find(id);
+            try {
+                Long bookingId = Long.valueOf(idParameter);
+                Booking booking = bookingFacade.find(bookingId);
 
-            if (booking == null) {
-                request.setAttribute("error", "Booking not found.");
-            } else if (booking.getBookingStatus() != BookingStatus.UNPAID) {
-                request.setAttribute("error", "This booking is not unpaid.");
-            } else {
-                booking.setBookingStatus(BookingStatus.BOOKED);
-                bookingFacade.edit(booking);
-                request.setAttribute("paidBooking", booking);
-                request.getRequestDispatcher("/counter/receipt.jsp").forward(request, response);
-                return;
+                if (booking == null) {
+                    request.setAttribute("error","Booking not found.");
+                } else if (booking.getBookingStatus()!= BookingStatus.UNPAID) {
+                    request.setAttribute("error","This booking is no longer awaiting payment.");
+                } else {
+                    booking.setBookingStatus(BookingStatus.BOOKED);
+                    bookingFacade.edit(booking);
+
+                    request.setAttribute("paidBooking", booking);
+                    request.getRequestDispatcher("/counter/receipt.jsp").forward(request, response);
+                    return;
+                }
+            } catch (NumberFormatException e) {
+                request.setAttribute("error","Invalid booking ID.");
             }
         }
 
-        List<Booking> unpaidBookings = bookingFacade.findByStatus(BookingStatus.UNPAID);
-        request.setAttribute("unpaidBookings", unpaidBookings);
+        //When an ID is provided without action=pay, show only the selected unpaid booking.
+        if (idParameter != null && !idParameter.isBlank()) {
+            try {
+                Long bookingId = Long.valueOf(idParameter);
+                Booking selectedBooking = bookingFacade.find(bookingId);
+
+                if (selectedBooking == null) {
+                    request.setAttribute("error","Booking not found.");
+                    request.setAttribute("unpaidBookings",List.of());
+                } else if (selectedBooking.getBookingStatus()!= BookingStatus.UNPAID) {
+                    request.setAttribute("error","This booking is not awaiting payment.");
+                    request.setAttribute("unpaidBookings",List.of());
+                } else {
+                    request.setAttribute("unpaidBookings",List.of(selectedBooking));
+                }
+            } catch (NumberFormatException e) {
+                request.setAttribute("error","Invalid booking ID.");
+                request.setAttribute("unpaidBookings",List.of());
+            }
+        } else {
+            //Opening /counter/Receipt without an ID still shows every unpaid booking.
+            List<Booking> unpaidBookings = bookingFacade.findByStatus(BookingStatus.UNPAID);
+            request.setAttribute("unpaidBookings",unpaidBookings);
+        }
+
         request.getRequestDispatcher("/counter/receipt.jsp").forward(request, response);
     }
 }
