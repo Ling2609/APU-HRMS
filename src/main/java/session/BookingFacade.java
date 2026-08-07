@@ -88,6 +88,7 @@ public class BookingFacade extends AbstractFacade<Booking> {
                 .setParameter("statuses", java.util.Arrays.asList(
                         Booking.BookingStatus.UNPAID,
                         Booking.BookingStatus.BOOKED,
+                        Booking.BookingStatus.LATE,
                         Booking.BookingStatus.CHECKED_IN))
                 .setParameter("checkIn", checkIn)
                 .setParameter("checkOut", checkOut)
