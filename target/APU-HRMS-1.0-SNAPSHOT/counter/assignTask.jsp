@@ -34,7 +34,16 @@
     <div class="container">
 
         <% if (selectedRoom == null) { %>
-            <div class="page-title">Assign Cleaning Task</div>
+            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:3px solid #b8860b; padding-bottom:8px; margin-bottom:20px;">
+                <div class="page-title" style="border:none; margin:0; padding:0;">
+                    Assign Cleaning Task
+                </div>
+
+                <a href="<%= request.getContextPath() %>/counter/ViewBookings"
+                   class="breadcrumb-link">
+                    ← Back to Booking List
+                </a>
+            </div>
             
             <%-- Messages moved below the title for Room List view --%>
             <% if (request.getAttribute("success") != null) { %>
