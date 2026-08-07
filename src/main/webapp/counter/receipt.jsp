@@ -119,13 +119,32 @@
                 </div>
                 <%-- Print button outside receipt box --%>
                 <div style="text-align:center; margin-top:20px;" class="no-print">
-                    <button onclick="window.print()" class="btn btn-gold">🖨️ Print Receipt</button>
+                    <p style="color:#388e3c; font-weight:bold; margin-bottom:15px;">
+                        Payment collected successfully. This booking is now ready for check-in.
+                    </p>
+
+                    <button onclick="window.print()" class="btn btn-gold">
+                        🖨️ Print Receipt
+                    </button>
+
+                    <a href="<%= request.getContextPath()%>/counter/CheckIn?id=<%= paidBooking.getId()%>"
+                       class="btn btn-primary"
+                       style="margin-left:10px; text-decoration:none;">
+                        Proceed to Check In
+                    </a>
                 </div>
 
         <% } else { %>
             <%-- Unpaid bookings list --%>
-            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 3px solid #b8860b; padding-bottom: 8px; margin-bottom: 20px;">
-                <div class="page-title" style="border:none; margin:0; padding:0;">Collect Payment</div>
+            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:3px solid #b8860b; padding-bottom:8px; margin-bottom:20px;">
+                <div class="page-title" style="border:none; margin:0; padding:0;">
+                    Collect Payment
+                </div>
+
+                <a href="<%= request.getContextPath() %>/counter/ViewBookings"
+                   class="breadcrumb-link">
+                    ← Back to Booking List
+                </a>
             </div>
 
             <% if (request.getAttribute("error") != null) { %>

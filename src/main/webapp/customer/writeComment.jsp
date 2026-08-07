@@ -35,7 +35,16 @@
     <div class="container">
 
         <% if (selectedBooking == null) { %>
-            <div class="page-title">Write Comment</div>
+            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:3px solid #b8860b; padding-bottom:8px; margin-bottom:20px;">
+                <div class="page-title" style="border:none; margin:0; padding:0;">
+                    Write Comment
+                </div>
+
+                <a href="${pageContext.request.contextPath}/customer/MyBookings"
+                   class="breadcrumb-link">
+                    ← Back to Booking History
+                </a>
+            </div>
             
             <%-- Messages moved here for the list view --%>
             <% if (request.getAttribute("success") != null) { %>
@@ -85,9 +94,15 @@
             <% } %>
 
         <% } else { %>
-            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 3px solid #b8860b; padding-bottom: 8px; margin-bottom: 20px;">
-                <div class="page-title" style="border:none; margin:0; padding:0;">Write Comment</div>
-                <a href="${pageContext.request.contextPath}/customer/WriteComment" class="breadcrumb-link">← Back to booking list</a>
+            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:3px solid #b8860b; padding-bottom:8px; margin-bottom:20px;">
+                <div class="page-title" style="border:none; margin:0; padding:0;">
+                    Write Comment
+                </div>
+
+                <a href="${pageContext.request.contextPath}/customer/WriteComment"
+                    class="breadcrumb-link">
+                     ← Back to Comment List
+                 </a>
             </div>
 
             <%-- Messages moved here for the form view --%>
