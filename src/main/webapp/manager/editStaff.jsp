@@ -40,7 +40,7 @@
                 
                 <form method="post" action="${pageContext.request.contextPath}/manager/EditStaff">
                     
-                    <input type="hidden" name="id" value="<%= staff.getId() %>" 
+                    <input type="hidden" name="id" value="<%= staff.getId() %>" >
                            
                     <table class="form-table">
                         <tr>

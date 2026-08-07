@@ -1,3 +1,4 @@
+<%@page import="java.time.temporal.ChronoUnit"%>
 <%@page import="entity.Message"%>
 <%@page import="entity.Room"%>
 <%@page import="entity.Booking"%>
@@ -62,6 +63,7 @@
                             <col class="bookingId">
                             <col class="room">
                             <col class="roomType">
+                            <col class="checkOutDate">
                             <col class="checkOutTime">
                             <col class="feedback">
                             <col class="action-col" colspan="2">
@@ -72,6 +74,7 @@
                                 <th>Booking ID</th>
                                 <th>Room Number</th>
                                 <th>Room Type</th>
+                                <th>Check Out Date</th>
                                 <th>Check Out Time</th>
                                 <th>Feedback</th>
                                 <th colspan="2">Action</th>
@@ -85,7 +88,8 @@
                                 <td><%= booking.getId() %></td>
                                 <td><%= booking.getRoom().getRoomNumber() %></td>
                                 <td><%= booking.getRoom().getRoomType().getRoomTypeName() %></td>
-                                <td><%= booking.getCheckOutTime() %></td>
+                                <td><%= booking.getCheckOutTime().toLocalDate() %></td>
+                                <td><%= booking.getCheckOutTime().toLocalTime().truncatedTo(ChronoUnit.SECONDS) %></td>
                                 
                                 <td>
                                 <% for(Message message : feedbackList) { %>

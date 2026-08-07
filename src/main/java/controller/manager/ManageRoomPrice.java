@@ -102,13 +102,13 @@ public class ManageRoomPrice extends HttpServlet {
             request.setAttribute("roomTypeList", roomTypeList);
 
             request.setAttribute("success", "Prices updated successfully.");
-            request.getRequestDispatcher("/manager/home.jsp").forward(request, response);
+            doGet(request, response);
             
         }
         catch (Exception e) {
             
             request.setAttribute("error", "Invalid price value.");
-            request.getRequestDispatcher("/manager/manageRoomPrice.jsp").forward(request, response);
+            doGet(request, response);
             
         }
         

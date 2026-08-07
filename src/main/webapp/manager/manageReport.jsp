@@ -1,3 +1,4 @@
+<%@page import="java.time.temporal.ChronoUnit"%>
 <%@page import="entity.Report"%>
 <%@page import="java.util.ArrayList"%>
 <%@ page contentType="text/html;charset=UTF-8" %>
@@ -29,7 +30,7 @@
             
         <div class="container">
             
-            <div class="page-title">Create Reports</div>
+            <div class="page-title">Create Report</div>
             
             <br>
             
@@ -102,7 +103,8 @@
                         <colgroup>
                             <col class="id">
                             <col class="reportType">
-                            <col class="generateTime"
+                            <col class="generateDate">
+                            <col class="generateTime">
                             <col class="startTime">
                             <col class="endTime">
                             <col class="action-col" colspan=2>
@@ -112,6 +114,7 @@
                             <tr>
                                 <th>ID</th>
                                 <th>Report Type</th>
+                                <th>Generate Date</th>
                                 <th>Generate Time</th>
                                 <th>Start Time</th>
                                 <th>End Time</th>
@@ -123,7 +126,8 @@
                             <tr>
                                 <td><%= report.getId() %></td>
                                 <td><%= report.getReportType().toString()%></td>
-                                <td><%= report.getGenerateTime()%></td>
+                                <td><%= report.getGenerateTime().toLocalDate() %></td>
+                                <td><%= report.getGenerateTime().toLocalTime().truncatedTo(ChronoUnit.SECONDS) %></td>
                                 <td><%= report.getStartTime()%></td>
                                 <td><%= report.getEndTime()%></td>
                                 <td>

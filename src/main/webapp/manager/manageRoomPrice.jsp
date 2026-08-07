@@ -37,6 +37,12 @@
                 <div class="msg-error"><%= request.getAttribute("error") %></div>
             <% } %>
             
+            <% if (request.getAttribute("success") != null) { %>
+            
+            <div class="msg-success"><%= request.getAttribute("success") %></div>
+            
+            <% } %>
+            
             <div class="form-container">
                 
                 <form method="post" action="${pageContext.request.contextPath}/manager/ManageRoomPrice">

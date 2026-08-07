@@ -1,3 +1,5 @@
+<%@page import="java.time.temporal.ChronoUnit"%>
+<%@page import="java.time.LocalDate"%>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ page import="entity.User, entity.Booking, java.util.List, java.util.Set" %>
 <%
@@ -43,28 +45,33 @@
             
             <form method="post" action="${pageContext.request.contextPath}/housekeeper/WriteFeedback">
                 
-                <input type="hidden" name="bookingId" value="<%= selectedBooking.getId() %>" 
+                <input type="hidden" name="bookingId" value="<%= selectedBooking.getId() %>" >
 
                 <table class="form-table">
                     
                     <tr>
                         <td>Booking ID: </td>
-                        <td><%= selectedBooking.getId() %>
+                        <td><%= selectedBooking.getId() %></td>
                     </tr>
                         
                     <tr>
                         <td>Room Number: </td>
-                        <td><%= selectedBooking.getRoom().getRoomNumber() %>
+                        <td><%= selectedBooking.getRoom().getRoomNumber() %></td>
                     </tr>
                     
                     <tr>
                         <td>Room Type: </td>
-                        <td><%= selectedBooking.getRoom().getRoomType().getRoomTypeName() %>
+                        <td><%= selectedBooking.getRoom().getRoomType().getRoomTypeName() %></td>
+                    </tr>
+                    
+                    <tr>
+                        <td>Check Out Date: </td>
+                        <td><%= selectedBooking.getCheckOutTime().toLocalDate() %></td>
                     </tr>
                     
                     <tr>
                         <td>Check Out Time: </td>
-                        <td><%= selectedBooking.getCheckOutTime() %>
+                        <td><%= selectedBooking.getCheckOutTime().toLocalTime().truncatedTo(ChronoUnit.SECONDS) %></td>
                     </tr>
                         
                     <tr>
@@ -75,7 +82,7 @@
                 </table>
                 
                 <div style="text-align:center; margin-top:20px;">
-                    <button type="submit" class="btn btn-primary" style="width:200px;">Submit Comment</button>
+                    <button type="submit" class="btn btn-primary" style="width:200px;">Submit Feedback</button>
                 </div>
 
             </form>

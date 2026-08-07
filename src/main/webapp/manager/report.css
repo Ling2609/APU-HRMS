@@ -67,7 +67,9 @@
     text-align: right;
 }
 
-.reportBodyContainer div.bodySection table tr td.time {
+.reportBodyContainer div.bodySection table tr td.time,
+.reportBodyContainer div.bodySection table tr td.number,
+.reportBodyContainer div.bodySection table tr td.status {
     text-align: center;
 }
 
