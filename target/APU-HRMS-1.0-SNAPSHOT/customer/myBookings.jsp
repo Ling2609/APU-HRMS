@@ -31,7 +31,7 @@
             <a href="${pageContext.request.contextPath}/Logout">Logout</a>
         </div>
     </div>
-    <div class="container">
+    <div class="container customer-bookings-container">
         <div class="page-title">My Bookings & Payment History</div>
         <br>
         <% if (bookings == null || bookings.isEmpty()) { %>
@@ -70,18 +70,18 @@
                         <tr>
                             <td><%= b.getId() %></td>
                             <td><%= b.getRoom().getRoomNumber() %></td>
-                            <td><%= b.getRoom().getRoomType().getRoomTypeName() %></td>
+                            <td><%= b.getRoom().getRoomType().getRoomTypeName().toString().replace("_", " ") %></td>
                             <td><%= b.getEstimatedCheckInTime().toLocalDate() %></td>
                             <td><%= b.getEstimatedCheckOutTime().toLocalDate() %></td>
                             <td><%= b.getCheckInTime() != null ? b.getCheckInTime().toLocalDate() : "-" %></td>
                             <td><%= b.getCheckOutTime() != null ? b.getCheckOutTime().toLocalDate() : "-" %></td>
                             <td>RM<%= String.format("%.2f", b.getPayment()) %></td>
-                            <td><%= b.getBookingStatus() %></td>
+                            <td><%= b.getBookingStatus().toString().replace("_", " ") %></td>
                             <td>
                                 <% if (b.getBookingStatus() == entity.Booking.BookingStatus.CHECKED_OUT) { %>
                                     
                                     <% if (commentedBookingIds.contains(b.getId())) { %>
-                                        <a href="${pageContext.request.contextPath}/customer/ViewComments?bookingId=<%= b.getId() %>" class="action-link">View Written Comment</a>
+                                        <a href="${pageContext.request.contextPath}/customer/ViewComments?bookingId=<%= b.getId() %>" class="action-link">View Comment</a>
                                     <% } else { %>
                                         <a href="${pageContext.request.contextPath}/customer/WriteComment?bookingId=<%= b.getId() %>" class="action-link">Write Comment</a>
                                     <% } %>
