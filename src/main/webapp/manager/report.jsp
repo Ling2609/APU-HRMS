@@ -1,3 +1,4 @@
+<%@page import="java.time.temporal.ChronoUnit"%>
 <%@page import="entity.Message"%>
 <%@page import="entity.Room"%>
 <%@page import="entity.Booking"%>
@@ -79,7 +80,7 @@
                 
                 <div class="headerLine">
                     <span>Report Generation Time:</span>
-                    <span><%= report.getGenerateTime().toLocalTime()%></span>
+                    <span><%= report.getGenerateTime().toLocalTime().truncatedTo(ChronoUnit.SECONDS) %></span>
                 </div>
                 
                 <div class="headerLine">
@@ -106,7 +107,7 @@
                             
                             <% FinancialReport viewingReport = (FinancialReport)request.getAttribute("viewingReport"); %>
                             <% ArrayList<BookingLog> bookingLogs = viewingReport.getBookingsLogs(); %>
-                            <% Double sum = 0.00; %>
+                            <% Double sumIn = 0.00; %>
                             <% Double total = 0.00; %>
                             <% for(BookingLog log : bookingLogs) { %>
 
@@ -114,7 +115,7 @@
                                 <td><span><%= bookingLogs.indexOf(log) %></span></td>
                                 <td><span>Transaction from Booking #<%= log.getBookingID() %></span></td>
                                 <td class="double"><span>+ <%= log.getPayment() %></span></td>
-                                <% sum = sum + log.getPayment(); %>
+                                <% sumIn = sumIn + log.getPayment(); %>
                             </tr>
 
                             <% } %>
@@ -122,19 +123,18 @@
                             <tr>
                                 <td></td>
                                 <td class="sum">Sum</td>
-                                <td class="double">+ <%= sum %></td>
-                                <% total = total + sum; %>
+                                <td class="double">+ <%= sumIn %></td>
                             </tr>
                             
                             <% ArrayList<SalaryLog> salaryLogs = viewingReport.getSalaryLogs(); %>
-                            <% sum = 0.00; %>
+                            <% Double sumOut = 0.00; %>
                             <% for(SalaryLog log : salaryLogs) { %>
 
                             <tr>
                                 <td><span><%= salaryLogs.indexOf(log) %></span></td>
                                 <td><span>Salary of staff #<%= log.getUser().getId() %></span></td>
                                 <td class="double"><span>- <%= log.getUserSalary() %></span></td>
-                                <% sum = sum + log.getUserSalary(); %>
+                                <% sumOut = sumOut + log.getUserSalary(); %>
                             </tr>
 
                             <% } %>
@@ -142,14 +142,24 @@
                             <tr>
                                 <td></td>
                                 <td class="sum">Sum</td>
-                                <td class="double">+ <%= sum %></td>
-                                <% total = total - sum; %>
+                                <td class="double">- <%= sumOut %></td>
+                                <% total = sumIn - sumOut; %>
                             </tr>
                             
                             <tr>
                                 <td></td>
                                 <td class="sum">Total</td>
-                                <td class="double">+ <%= total %></td>
+                                <td class="double">
+                                    <% if(total > 0) { %>
+                                        (Nett Profit) + <%= Math.abs(total) %> 
+                                    <% }%>
+                                    <% if(total < 0) { %>
+                                        (Nett Loss) - <%= Math.abs(total) %>
+                                    <% }%>
+                                    <% if(total == 0) { %>
+                                        (No Nett Change)<%= total %>
+                                    <% }%>
+                                </td>
                             </tr>
                             
                         </table>
@@ -188,7 +198,7 @@
                             <tr>
                                 <td></td>
                                 <td class="sum">Sum</td>
-                                <td class="double">+ <%= sum %></td>
+                                <td class="double">(Nett Profit) + <%= sum %> </td>
                             </tr>
                         </table>
                         
@@ -207,6 +217,8 @@
                             
                             <tr>
                                 <th>No</th>
+                                <th>Room ID</th>
+                                <th>Floor Number</th>
                                 <th>Room Number</th>
                                 <th>Status</th>
                             </tr>
@@ -215,8 +227,10 @@
 
                             <tr>
                                 <td><span><%= roomLogs.indexOf(log) %></span></td>
-                                <td><span>Room #<%= log.getRoom().getId() %></span></td>
-                                <td><span><%= log.getRoomStatus().toString() %></span></td>
+                                <td class="number"><span>Room #<%= log.getRoom().getRoomNumber() %></span></td>
+                                <td class="number"><span><%= String.valueOf(log.getRoom().getRoomNumber()).substring(0, 1) %></span></td>
+                                <td class="number"><span><%= String.valueOf(log.getRoom().getRoomNumber()).substring(1, 4) %></span></td>
+                                <td class="status"><span><%= log.getRoomStatus().toString() %></span></td>
                             </tr>
 
                         <% } %>
@@ -239,9 +253,13 @@
                             <tr>
                                 <th>No</th>
                                 <th>Booking No.</th>
+                                <th>Estimated Check In Date</th>
                                 <th>Estimated Check In Time</th>
-                                <th>Estimated Check Out Time</th>
+                                <th>Actual Check In Date</th>
                                 <th>Actual Check In Time</th>
+                                <th>Estimated Check Out Date</th>
+                                <th>Estimated Check Out Time</th>
+                                <th>Actual Check Out Date</th>
                                 <th>Actual Check Out Time</th>
                             </tr>
                             
@@ -250,10 +268,24 @@
                             <tr>
                                 <td><span><%= bookingLogs.indexOf(log) %></span></td>
                                 <td><span>Booking #<%= log.getBookingID() %></span></td>
-                                <td class="time"><span><%= log.getEstimatedCheckInTime() %></span></td>
-                                <td class="time"><span><%= log.getEstimatedCheckOutTime() %></span></td>
-                                <td class="time"><span><%= log.getCheckInTime() %></span></td>
-                                <td class="time"><span><%= log.getCheckOutTime() %></span></td>
+                                <td class="time"><span><%= log.getEstimatedCheckInTime().toLocalDate() %></span></td>
+                                <td class="time"><span><%= log.getEstimatedCheckInTime().toLocalTime().truncatedTo(ChronoUnit.SECONDS) %></span></td>
+                                <% if(log.getCheckInTime() != null) { %>
+                                <td class="time"><span><%= log.getCheckInTime().toLocalDate() %></span></td>
+                                <td class="time"><span><%= log.getCheckInTime().toLocalTime().truncatedTo(ChronoUnit.SECONDS) %></span></td>
+                                <% } else { %>
+                                <td class="time"><span>-</span></td>
+                                <td class="time"><span>-</span></td>
+                                <% } %>
+                                <td class="time"><span><%= log.getEstimatedCheckOutTime().toLocalDate() %></span></td>
+                                <td class="time"><span><%= log.getEstimatedCheckOutTime().toLocalTime().truncatedTo(ChronoUnit.SECONDS) %></span></td>
+                                <% if(log.getCheckOutTime()!= null) { %>
+                                <td class="time"><span><%= log.getCheckOutTime().toLocalDate() %></span></td>
+                                <td class="time"><span><%= log.getCheckOutTime().toLocalTime().truncatedTo(ChronoUnit.SECONDS) %></span></td>
+                                <% } else { %>
+                                <td class="time"><span>-</span></td>
+                                <td class="time"><span>-</span></td>
+                                <% } %>
                             </tr>
 
                         <% } %>
@@ -281,24 +313,21 @@
                             </tr>
                             
                         <% for(BookingLog log : bookingLogs) { %>
-
-                            <tr>
                                 
                                 <% for(Message msg : viewingReport.getMessages()) { %>
                                 
                                     <% if(msg.getBookingUser().getBooking().getId() == log.getBookingID()) { %>
                                     
+                                    <tr>
                                         <td><span><%= bookingLogs.indexOf(log) %></span></td>
                                         <td><span>Booking #<%= log.getBookingID() %></span></td>
                                         <td class="time"><span><%= msg.getMessageType() %></span></td>
                                         <td class="time"><span><%= msg.getMessageContent() %></span></td>
-                                        
+                                    </tr>
                                     <% } %>
                                 
                                 <% } %>
                                 
-                            </tr>
-
                         <% } %>
 
                         </table>
@@ -309,7 +338,7 @@
                                     
                 <%-- Print button outside receipt box --%>
                 <div style="text-align:center; margin-top:20px;" class="no-print">
-                    <button onclick="window.print()" class="btn btn-gold">🖨️ Print Receipt</button>
+                    <button onclick="window.print()" class="btn btn-gold">🖨️ Print Report</button>
                 </div>
                 
             </div>
