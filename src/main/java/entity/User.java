@@ -48,25 +48,78 @@ public class User implements Serializable {
         this.role = role;
         this.salary = salary;
     }
+    
+    public User(Long id, String name, String password, String gender, String identification,
+                String phone, String email, String address, Role role, Double salary) {
+        this.id = id;
+        this.name = name;
+        this.password = password;
+        this.gender = gender;
+        this.identification = identification;
+        this.phone = phone;
+        this.email = email;
+        this.address = address;
+        this.role = role;
+        this.salary = salary;
+    }
+    
+    public User(Staff staff) {
+        this.id = staff.getId();
+        this.name = staff.getName();
+        this.password = staff.getPassword();
+        this.gender = staff.getGender();
+        this.identification = staff.getIdentification();
+        this.phone = staff.getPhone();
+        this.email = staff.getEmail();
+        this.address = staff.getAddress();
+        this.role = staff.getRole();
+        this.salary = staff.getSalary();
+    }
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
+    
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
+    
     public String getPassword() { return password; }
     public void setPassword(String password) { this.password = password; }
+    
     public String getGender() { return gender; }
     public void setGender(String gender) { this.gender = gender; }
+    
     public String getIdentification() { return identification; }
     public void setIdentification(String identification) { this.identification = identification; }
+    
     public String getPhone() { return phone; }
     public void setPhone(String phone) { this.phone = phone; }
+    
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
+    
     public String getAddress() { return address; }
     public void setAddress(String address) { this.address = address; }
+    
     public Role getRole() { return role; }
     public void setRole(Role role) { this.role = role; }
-    public Double getSalary() { return salary; }
-    public void setSalary(Double salary) { this.salary = salary; }
+    
+    public double getSalary() { return this.salary; }
+    public void setSalary(double input) {this.salary = input; }
+    
+    public static Role getRole(String input) {
+        switch(input.toLowerCase()) {
+            case "customer": return Role.CUSTOMER;
+            case "counter_staff": return Role.COUNTER_STAFF;
+            case "housekeeper": return Role.HOUSEKEEPER;
+            case "manager": return Role.MANAGER;
+        }
+        return Role.CUSTOMER;
+    }
+    
+    @Override
+    public String toString() {
+        return "User: " + this.getName() + " " + this.getPassword() + " " + this.getGender() + " " + this.getIdentification() + " " +
+            this.getPhone() + " " + this.getEmail() + " " + this.getAddress() + " " + this.getRole().toString() + " " + this.getSalary();
+    }
+
 }

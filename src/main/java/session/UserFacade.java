@@ -29,6 +29,10 @@ public class UserFacade extends AbstractFacade<User> {
         super(User.class);
     }
     
+    public UserFacade(Class<User> entityClass) {
+        super(entityClass);
+    }
+    
     public User findByNameAndPassword(String name, String password) {
         try {
             return em.createQuery(
